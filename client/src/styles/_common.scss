@@ -1,0 +1,8 @@
+@layer components {
+  .glass-btn {
+    @apply bg-white/20 rounded-lg shadow-lg border-none;
+    &:hover {
+      @apply bg-white/40 rounded-lg shadow-lg border-none scale-105;
+    }
+  }
+}

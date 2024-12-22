@@ -1,0 +1,13 @@
+@layer components {
+  .chat-window {
+    @apply min-h-screen bg-white bg-opacity-20 shadow-lg backdrop-blur-[8.5px];
+  }
+
+  .chat-sidebar {
+    @apply bg-white/20 rounded-lg shadow-lg overflow-auto fixed top-0 bottom-0 m-6;
+  }
+
+  .avatar-box {
+    @apply w-full p-7 h-16;
+  }
+}
