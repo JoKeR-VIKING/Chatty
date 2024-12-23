@@ -2,14 +2,13 @@ import React from 'react';
 import { Layout } from 'antd';
 
 import Sidebar from '@components/Sidebar';
-import { useAuthCheck } from '@hooks/auth.hooks.ts';
+import Chat from '@components/Chat';
 
 const ChatWindow: React.FC = () => {
-  useAuthCheck();
-
   return (
     <Layout className="chat-window" hasSider>
       <Sidebar />
+      <Chat />
     </Layout>
   );
 };

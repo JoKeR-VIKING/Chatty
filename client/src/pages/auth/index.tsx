@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useRouter, NextRouter } from 'next/router';
 import { useGoogleLogin, TokenResponse } from '@react-oauth/google';
 import { AxiosError, AxiosResponse } from 'axios';
@@ -6,22 +7,23 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { Flex, Button, Typography, Divider, Spin } from 'antd';
 import { Icon } from '@iconify/react';
 
+import { AppDispatch } from '@src/store';
+import { setUser } from '@store/user.slice';
 import { IApiResponse } from '@src/interfaces';
-import { IUserRequest } from '@interfaces/user.interface.ts';
+import { IUserRequest, IUserResponse } from '@interfaces/user.interface';
 import { useToast } from '@hooks/toast.hooks';
 import { useLogin } from '@hooks/user.hooks';
-import { useAuthCheck } from '@hooks/auth.hooks.ts';
 
 const { Paragraph } = Typography;
 
 const AuthWindow: React.FC = () => {
-  useAuthCheck();
-
+  const dispatch: AppDispatch = useDispatch();
   const router: NextRouter = useRouter();
   const { createToast } = useToast();
 
-  const onLoginSuccess = async (data: AxiosResponse<IApiResponse>) => {
+  const onLoginSuccess = async (data: AxiosResponse<IUserResponse>) => {
     createToast('success', data?.data?.message);
+    dispatch(setUser(data?.data?.user));
     await router.replace('/chat');
   };
 

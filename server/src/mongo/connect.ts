@@ -12,7 +12,10 @@ export default () => {
         serverApi: mongoose.mongo.ServerApiVersion.v1,
       })
       .then(() => console.log('Successfully connected to database'))
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        console.error(err);
+        process.exit(1);
+      });
   };
 
   connect();

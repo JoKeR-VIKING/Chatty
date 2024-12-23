@@ -50,7 +50,7 @@ module.exports = tseslint.config(
       '@typescript-eslint/no-require-imports': 'off',
 
       // General Node.js rules
-      'no-process-exit': 'warn', // Warn against using process.exit()
+      'no-process-exit': 'off', // Warn against using process.exit()
       'no-unused-vars': 'warn', // Warn if variables are defined but not used
       'no-shadow': 'warn', // Warn if variables shadow outer scope
       'no-redeclare': 'warn', // Warn if variables are redeclared

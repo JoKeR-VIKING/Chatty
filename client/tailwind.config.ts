@@ -8,6 +8,9 @@ export default {
         chivo: ['Chivo', 'sans-serif'],
         nunito: ['Nunito Sans', 'sans'],
       },
+      colors: {
+        primary: '#1e90ff',
+      },
     },
     plugins: [],
   },

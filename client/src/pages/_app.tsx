@@ -9,10 +9,11 @@ import type { AppProps } from 'next/app';
 import { ConfigProvider, Layout, theme } from 'antd';
 
 import Config from '@utils/config';
-import LogoImage from '@images/Logo.jpg';
 import ToastProvider from '@components/ToastProvider';
+import AuthProvider from '@components/AuthProvider';
 import store from '@store/index';
 
+import Logo from '@public/Logo.jpg';
 import 'animate.css';
 import '@styles/index.css';
 
@@ -34,7 +35,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="icon" href={LogoImage.src} />
+        <link rel="icon" href={Logo.src} />
         <title>Chatty</title>
       </Head>
 
@@ -58,13 +59,15 @@ const App = ({ Component, pageProps }: AppProps) => {
         <GoogleOAuthProvider clientId={Config.GOOGLE_CLIENT_ID as string}>
           <Provider store={store}>
             <QueryClientProvider client={queryClient}>
-              <ToastProvider>
-                <Layout>
-                  <Content className="min-h-screen h-screen hero-bg">
-                    <Component {...pageProps} />
-                  </Content>
-                </Layout>
-              </ToastProvider>
+              <AuthProvider>
+                <ToastProvider>
+                  <Layout>
+                    <Content className="min-h-screen h-screen hero-bg">
+                      <Component {...pageProps} />
+                    </Content>
+                  </Layout>
+                </ToastProvider>
+              </AuthProvider>
 
               <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>

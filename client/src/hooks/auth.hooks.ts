@@ -36,13 +36,5 @@ export const useAuthCheck = () => {
         }
       }
     })();
-  }, [
-    createToast,
-    data?.data?.user,
-    dispatch,
-    error?.response?.data?.message,
-    isPending,
-    isSuccess,
-    router,
-  ]);
+  }, [isPending]); //eslint-disable-line
 };

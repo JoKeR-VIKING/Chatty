@@ -10,4 +10,29 @@
   .avatar-box {
     @apply w-full p-7 h-16;
   }
+
+  .chat-main {
+    @apply ml-[350px] bg-transparent m-6;
+    scrollbar-width: none;
+  }
+
+  .chat-header {
+    @apply flex justify-end items-center bg-white/20 shadow-[0_-11px_15px_-3px_rgb(0_0_0_/_0.1)] rounded-t-lg p-0;
+  }
+
+  .chat-content {
+    @apply bg-white/10;
+  }
+
+  .chat-footer {
+    @apply w-full flex justify-start items-center px-4 pt-2 pb-5 bg-white/20 shadow-lg rounded-b-lg;
+  }
+
+  .icon-btn {
+    @apply bg-white/20 border-none shadow-lg;
+  }
+
+  .icon {
+    @apply text-white mx-2;
+  }
 }

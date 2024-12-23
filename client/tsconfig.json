@@ -47,8 +47,8 @@
       "@interfaces/*": [
         "./src/interfaces/*"
       ],
-      "@images/*": [
-        "./src/images/*"
+      "@public/*": [
+        "./src/public/*"
       ],
       "@theme/*": [
         "./src/theme/*"

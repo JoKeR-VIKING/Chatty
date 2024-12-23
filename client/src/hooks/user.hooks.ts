@@ -6,7 +6,7 @@ import { IUserRequest, IUserResponse } from '@interfaces/user.interface';
 import { loginApi, getUserStatusApi } from '@api/user.api';
 
 type UserLoginProps = {
-  onLoginSuccess: (data: AxiosResponse<IApiResponse>) => void;
+  onLoginSuccess: (data: AxiosResponse<IUserResponse>) => void;
   onLoginError: (error: AxiosError<IApiResponse>) => void;
 };
 
@@ -14,7 +14,7 @@ const queryClient: QueryClient = new QueryClient();
 
 export const useLogin = ({ onLoginSuccess, onLoginError }: UserLoginProps) => {
   return useMutation<
-    AxiosResponse<IApiResponse>,
+    AxiosResponse<IUserResponse>,
     AxiosError<IApiResponse>,
     IUserRequest
   >({
@@ -35,5 +35,6 @@ export const useUserStatus = () => {
     queryFn: ({ signal }) => getUserStatusApi(signal),
     retry: false,
     staleTime: 0,
+    refetchOnWindowFocus: false,
   });
 };
