@@ -7,7 +7,7 @@
 @for $i from 1 through 9 {
   #Line_#{$i} {
     animation: pulse 1s infinite;
-    animation-delay: $i * .15s;
+    animation-delay: $i * 0.15s;
   }
 }
 
@@ -18,7 +18,7 @@
   }
 
   50% {
-    transform: scaleY(.7);
+    transform: scaleY(0.7);
     transform-origin: 50% 50%;
   }
 

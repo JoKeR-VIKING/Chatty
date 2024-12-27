@@ -1,7 +1,7 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 echo "--- Running pre-commit checks ---"
+
+# Ensure pnpm is available
+export PATH=$(npm bin):$PATH
 
 # Define directories
 dirs="client server"
@@ -12,11 +12,30 @@ for dir in $dirs; do
 
   # TypeScript checks
   echo "Running TypeScript checks in $dir..."
-  pnpm type-check || exit 1
+  if pnpm type-check > /dev/null 2>&1; then
+    echo "✔ TypeScript checks passed in $dir"  # Green tick for success
+  else
+    echo "✖ TypeScript checks failed in $dir"  # Red cross for failure
+    exit 1
+  fi
 
-  # Linting and Prettifying
-  echo "Linting and prettifying code in $dir..."
-  pnpm lint && pnpm prettier || exit 1
+  # Prettier check
+  echo "Prettifying code in $dir..."
+  if pnpm prettier --check . > /dev/null 2>&1; then
+    echo "✔ Prettier checks passed in $dir"  # Green tick for success
+  else
+    echo "✖ Prettier checks failed in $dir"  # Red cross for failure
+    exit 1
+  fi
+
+  # Linting
+  echo "Linting code in $dir..."
+  if pnpm lint "src/**/*.{js,ts,jsx,tsx}" > /dev/null 2>&1; then
+    echo "✔ Linting passed in $dir"  # Green tick for success
+  else
+    echo "✖ Linting failed in $dir"  # Red cross for failure
+    exit 1
+  fi
 
   cd - > /dev/null || exit
 done

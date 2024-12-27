@@ -12,9 +12,7 @@ export const convertToBase64 = async (url: string): Promise<string> => {
   });
 
   const contentType = response.headers['content-type'];
-  const base64Data = Buffer.from(response?.data, 'binary').toString(
-    'base64',
-  );
+  const base64Data = Buffer.from(response?.data, 'binary').toString('base64');
 
   return `data:${contentType};base64,${base64Data}`;
 };
