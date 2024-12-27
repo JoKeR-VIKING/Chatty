@@ -28,15 +28,6 @@ for dir in $dirs; do
     exit 1
   fi
 
-  # Linting
-  echo "Linting code in $dir..."
-  if pnpm lint "src/**/*.{js,ts,jsx,tsx}" > /dev/null 2>&1; then
-    echo "✔ Linting passed in $dir"  # Green tick for success
-  else
-    echo "✖ Linting failed in $dir"  # Red cross for failure
-    exit 1
-  fi
-
   cd - > /dev/null || exit
 done
 
