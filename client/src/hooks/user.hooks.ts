@@ -2,8 +2,17 @@ import { useMutation, useQuery, QueryClient } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 
 import { IApiResponse } from '@src/interfaces';
-import { IUserRequest, IUserResponse } from '@interfaces/user.interface';
-import { loginApi, getUserStatusApi } from '@api/user.api';
+import {
+  IUserRequest,
+  IUserResponse,
+  ISearchUsersReponse,
+} from '@interfaces/user.interface';
+import {
+  loginApi,
+  getUserStatusApi,
+  logoutApi,
+  searchUsersApi,
+} from '@api/user.api';
 
 type UserLoginProps = {
   onLoginSuccess: (data: AxiosResponse<IUserResponse>) => void;
@@ -37,4 +46,28 @@ export const useUserStatus = () => {
     staleTime: 0,
     refetchOnWindowFocus: false,
   });
+};
+
+export const useLogout = () => {
+  return useQuery<AxiosResponse<IApiResponse>, AxiosError<IApiResponse>, void>({
+    queryKey: ['logout'],
+    queryFn: ({ signal }) => logoutApi(signal),
+    retry: false,
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
+};
+
+export const useSearchUsers = (searchPrefix: string) => {
+  return useQuery<AxiosResponse<ISearchUsersReponse>, AxiosError<IApiResponse>>(
+    {
+      queryKey: ['user-search', searchPrefix],
+      queryFn: ({ signal }) => searchUsersApi(searchPrefix, signal),
+      retry: false,
+      staleTime: 0,
+      refetchOnWindowFocus: false,
+      enabled: !!searchPrefix && searchPrefix.length > 3,
+    },
+  );
 };

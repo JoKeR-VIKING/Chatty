@@ -4,7 +4,10 @@
   }
 
   .chat-sidebar {
-    @apply bg-white/20 rounded-lg shadow-lg overflow-auto fixed top-0 bottom-0 m-6;
+    @apply bg-white/10 rounded-lg shadow-lg overflow-auto fixed top-0 bottom-0 m-6;
+    inset-inline-start: 0;
+    scrollbar-width: none;
+    scrollbar-gutter: stable;
   }
 
   .avatar-box {
@@ -18,6 +21,9 @@
 
   .chat-header {
     @apply flex justify-end items-center bg-white/20 shadow-[0_-11px_15px_-3px_rgb(0_0_0_/_0.1)] rounded-t-lg p-0;
+    .chat-user-name {
+      @apply font-chivo text-xl m-0 ml-3;
+    }
   }
 
   .chat-content {
@@ -28,11 +34,14 @@
     @apply w-full flex justify-start items-center px-4 pt-2 pb-5 bg-white/20 shadow-lg rounded-b-lg;
   }
 
-  .icon-btn {
-    @apply bg-white/20 border-none shadow-lg;
+  .message-box {
+    @apply rounded-2xl font-chivo font-light text-[1rem] border-none ml-5 mr-5 pt-2.5 pb-2.5;
+    &:focus {
+      @apply shadow-sm shadow-[darkcyan];
+    }
   }
 
-  .icon {
-    @apply text-white mx-2;
+  .attachment-box {
+    @apply w-full rounded-2xl bg-[darkcyan] ml-5 mr-5 pl-2 pt-2.5 pb-2.5;
   }
 }

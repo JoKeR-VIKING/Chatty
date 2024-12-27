@@ -5,10 +5,16 @@ const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
-export const convertImageUrltoBase64 = async (url: string): Promise<string> => {
-  const response = await axios.get(url, { responseType: 'arraybuffer', httpsAgent: httpsAgent });
-  const base64 = Buffer.from(response.data, 'binary').toString('base64');
-  const contentType = response.headers['content-type'];
+export const convertToBase64 = async (url: string): Promise<string> => {
+  const response = await axios.get(url, {
+    responseType: 'arraybuffer',
+    httpsAgent: httpsAgent,
+  });
 
-  return `data:${contentType};base64,${base64}`;
+  const contentType = response.headers['content-type'];
+  const base64Data = Buffer.from(response?.data, 'binary').toString(
+    'base64',
+  );
+
+  return `data:${contentType};base64,${base64Data}`;
 };

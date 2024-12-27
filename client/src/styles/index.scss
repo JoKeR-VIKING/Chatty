@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Pacifico&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Pacifico&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,21 +6,25 @@
 
 @import './common';
 @import './chat';
+@import './icon';
+@import './audio';
+@import './search-results';
+@import './recent-chats';
 
 html,
 body {
   padding: 0;
   margin: 0;
-  background-color: #f5f5f5;
+  background-color: darkcyan;
 }
 
 ::selection {
-  color: #0b1014;
-  background: #1e90ff;
+  color: darkcyan;
+  background: #fff;
 }
 
 .hero-bg {
-  background-image: linear-gradient(to right bottom, rgba(30, 144, 255, 0.75), rgba(70, 130, 180, 0.75)), url(../public/Chat.png);
+  background-image: linear-gradient(to right bottom, rgba(77, 159, 159, 0.85), rgba(77, 159, 159, 0.85)), url(../public/Chat.png);
   background-size: cover;
   background-position: center;
 }

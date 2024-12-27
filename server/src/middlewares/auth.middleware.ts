@@ -8,6 +8,7 @@ export const isAuthenticated = async (
 ) => {
   if (req?.session?.userId) return next();
 
+  res.clearCookie('connect.sid');
   res
     .status(StatusCodes.UNAUTHORIZED)
     .json({ message: 'Session is expired. Please login again.' });

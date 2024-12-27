@@ -5,6 +5,7 @@ export type IUserRequest = {
 };
 
 export type IUser = {
+  id: string;
   googleEmail: string;
   googleName: string;
   googlePicture: string;
@@ -12,4 +13,8 @@ export type IUser = {
 
 export type IUserResponse = IApiResponse & {
   user: IUser;
+};
+
+export type ISearchUsersReponse = IApiResponse & {
+  users: IUser[];
 };

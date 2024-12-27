@@ -1,0 +1,24 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "--- Running pre-commit checks ---"
+
+# Define directories
+dirs="client server"
+
+for dir in $dirs; do
+  echo "Processing $dir..."
+  cd "$dir" || exit 1
+
+  # TypeScript checks
+  echo "Running TypeScript checks in $dir..."
+  pnpm type-check || exit 1
+
+  # Linting and Prettifying
+  echo "Linting and prettifying code in $dir..."
+  pnpm lint && pnpm prettier || exit 1
+
+  cd - > /dev/null || exit
+done
+
+echo "--- Pre-commit checks completed successfully ---"

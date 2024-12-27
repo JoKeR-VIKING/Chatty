@@ -1,25 +1,31 @@
 import React from 'react';
-import { Layout, Flex, Avatar, Button } from 'antd';
-import { Icon } from '@iconify/react';
+import { useRouter, NextRouter } from 'next/router';
+import { googleLogout } from '@react-oauth/google';
 import { useSelector } from 'react-redux';
 
+import { Layout, Flex, Avatar, Button } from 'antd';
+import { Icon } from '@iconify/react';
+
+import SearchBox from '@components/SearchBox';
+import RecentChats from '@components/RecentChats';
 import { RootState } from '@src/store';
+import { useLogout } from '@hooks/user.hooks';
 
 const { Sider } = Layout;
 
 const Sidebar: React.FC = () => {
+  const router: NextRouter = useRouter();
   const { user } = useSelector((state: RootState) => state.user);
+  const { refetch } = useLogout();
+
+  const logout = async () => {
+    googleLogout();
+    await refetch();
+    await router.replace('/auth');
+  };
 
   return (
-    <Sider
-      className="chat-sidebar"
-      width={300}
-      style={{
-        insetInlineStart: 0,
-        scrollbarWidth: 'none',
-        scrollbarGutter: 'stable',
-      }}
-    >
+    <Sider className="chat-sidebar" width={300}>
       <Flex vertical align="center">
         <Flex className="avatar-box" justify="space-between" align="center">
           <Avatar
@@ -35,10 +41,15 @@ const Sidebar: React.FC = () => {
             type="default"
             size="large"
             icon={<Icon icon="line-md:logout" />}
+            onClick={logout}
           >
             Logout
           </Button>
         </Flex>
+
+        <SearchBox />
+
+        <RecentChats />
       </Flex>
     </Sider>
   );

@@ -1,0 +1,21 @@
+.icon-btn {
+  @apply text-white bg-[darkcyan] border-none shadow-lg;
+  .icon {
+    @apply text-white mx-2;
+  }
+
+  &:hover {
+    @apply bg-white;
+    background-color: white !important;
+    .icon {
+      @apply text-[darkcyan];
+    }
+    #wave {
+      @apply fill-[darkcyan];
+    }
+  }
+}
+
+.icon {
+  @apply text-white mx-2;
+}

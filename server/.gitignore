@@ -4,3 +4,4 @@ node_modules
 .idea
 dist
 chatty-cert.pem
+chatty-service-account.json

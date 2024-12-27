@@ -1,0 +1,48 @@
+@layer components {
+  .recent-chats {
+    @apply w-full h-screen mt-6;
+
+    .ant-menu {
+      @apply w-[90%] h-full bg-transparent;
+      border: none !important;
+
+      .ant-menu-item {
+        @apply h-auto p-1 pl-2 pt-2 mb-3;
+        &:hover {
+          @apply bg-white;
+          background-color: white !important;
+
+          .ant-typography {
+            @apply text-primary;
+          }
+        }
+
+        .ant-avatar {
+          @apply w-11 h-11 mr-4;
+        }
+
+        .ant-typography {
+          @apply m-0;
+        }
+
+        .ant-typography:nth-child(1) {
+          @apply mb-1 font-semibold text-base;
+        }
+
+        .ant-typography:nth-child(2) {
+          @apply mb-2 font-light text-sm;
+        }
+      }
+
+      .ant-menu-item-selected {
+        .ant-typography {
+          @apply text-[#f5f5f5];
+        }
+
+        &:hover {
+          @apply text-primary;
+        }
+      }
+    }
+  }
+}

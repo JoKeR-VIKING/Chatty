@@ -1,8 +1,36 @@
 @layer components {
   .glass-btn {
-    @apply bg-white/20 rounded-lg shadow-lg border-none;
+    @apply bg-white/20 rounded-lg shadow-lg border-none font-normal;
     &:hover {
       @apply bg-white/40 rounded-lg shadow-lg border-none scale-105;
     }
+  }
+
+  .hero-btn {
+    @apply text-[0.9rem] rounded-3xl text-white;
+    &:hover {
+      @apply rounded-3xl;
+    }
+  }
+
+  .search-box {
+    @apply p-3 font-light border-none font-chivo;
+    &:focus {
+      @apply shadow-none;
+    }
+
+    input {
+      @apply border-none p-2 font-chivo;
+      &:focus {
+        box-shadow: none;
+      }
+    }
+    button {
+      @apply bg-white/10 rounded-lg border border-solid border-[darkcyan] text-white;
+    }
+  }
+
+  .sidebar-search {
+    @apply w-[90%] rounded-3xl mt-5;
   }
 }

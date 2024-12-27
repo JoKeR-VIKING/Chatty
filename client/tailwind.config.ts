@@ -9,7 +9,8 @@ export default {
         nunito: ['Nunito Sans', 'sans'],
       },
       colors: {
-        primary: '#1e90ff',
+        'primary-dark': '#005353',
+        primary: 'darkcyan',
       },
     },
     plugins: [],

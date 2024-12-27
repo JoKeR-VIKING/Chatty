@@ -1,0 +1,25 @@
+@layer components {
+  .friends-tooltip {
+    .ant-tooltip-inner {
+      @apply p-0;
+    }
+  }
+
+  .friends-search-box {
+    .ant-menu {
+      @apply w-[300px] rounded-xl bg-transparent border-none;
+
+      li {
+        @apply h-auto p-1;
+
+        .friends-list-item {
+          @apply w-full glass-btn px-2 py-1;
+        }
+
+        .ant-typography {
+          @apply m-0 text-white;
+        }
+      }
+    }
+  }
+}

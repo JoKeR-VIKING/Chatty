@@ -15,6 +15,7 @@ declare module 'express-session' {
   interface SessionData {
     userId?: string | ObjectId;
     user?: {
+      id: string | ObjectId;
       googleEmail: string;
       googleName: string;
       googlePicture: string;

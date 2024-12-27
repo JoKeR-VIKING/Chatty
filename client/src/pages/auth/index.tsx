@@ -63,10 +63,10 @@ const AuthWindow: React.FC = () => {
               Continue with
             </Divider>
             <Button
+              className="glass-btn hero-btn animate__animated animate__fadeInUp"
               type="default"
               icon={<Icon icon="logos:google-icon" />}
               onClick={() => login()}
-              className="p-5 text-[0.9rem] rounded-3xl animate__animated animate__fadeInUp"
             >
               Sign in with Google
             </Button>

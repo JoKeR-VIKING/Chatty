@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Layout, Flex, Button, Avatar, Typography, Input } from 'antd';
+import { Layout, Flex, Avatar, Typography, Input } from 'antd';
 
 import { RootState } from '@src/store';
 
@@ -13,20 +13,12 @@ const ChatHeader: React.FC = () => {
 
   return (
     <Header className="chat-header">
-      <Flex className="w-full h-14" justify="flex-start" align="center">
-        <Button className="p-6" type="text">
-          <Avatar size="large" src={user?.googlePicture} draggable={false} />
-
-          <Paragraph
-            className="font-chivo text-xl"
-            style={{ margin: 0, marginLeft: '0.75rem' }}
-          >
-            {user?.googleName}
-          </Paragraph>
-        </Button>
+      <Flex className="w-full h-14 p-6" justify="flex-start" align="center">
+        <Avatar size="large" src={user?.googlePicture} draggable={false} />
+        <Paragraph className="chat-user-name">{user?.googleName}</Paragraph>
       </Flex>
 
-      <Search size="large" className="p-3 font-thin" placeholder="Search..." />
+      <Search size="large" className="search-box" placeholder="Search..." />
     </Header>
   );
 };

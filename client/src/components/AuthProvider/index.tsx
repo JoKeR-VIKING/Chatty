@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { NextRouter, useRouter } from 'next/router';
 
 import { AppDispatch } from '@src/store';
 import { setUser, clearUser } from '@store/user.slice';
@@ -12,17 +13,21 @@ type Props = {
 const AuthProvider: React.FC<Props> = (props) => {
   const { children } = props;
 
+  const router: NextRouter = useRouter();
   const dispatch: AppDispatch = useDispatch();
   const { isPending, isSuccess, data, error } = useUserStatus();
 
   useEffect(() => {
-    if (!isPending) {
-      if (isSuccess) {
-        dispatch(setUser(data?.data?.user));
-      } else {
-        dispatch(clearUser());
+    (async () => {
+      if (!isPending) {
+        if (isSuccess) {
+          dispatch(setUser(data?.data?.user));
+        } else {
+          await router.replace('/auth');
+          dispatch(clearUser());
+        }
       }
-    }
+    })();
   }, [dispatch, isPending, isSuccess, data, error]);
 
   return <>{children}</>;

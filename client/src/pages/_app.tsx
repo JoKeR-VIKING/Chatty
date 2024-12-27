@@ -43,15 +43,30 @@ const App = ({ Component, pageProps }: AppProps) => {
         theme={{
           algorithm: theme.defaultAlgorithm,
           token: {
-            colorPrimary: '#1e90ff',
-            colorTextBase: '#000',
+            colorPrimary: 'darkcyan',
+            colorTextBase: '#005353',
           },
           components: {
             Layout: {
               siderBg: 'transparent',
             },
+            Input: {
+              colorBgContainer: 'darkcyan',
+              colorText: '#f9f8fd',
+              colorTextPlaceholder: '#f9f8fd',
+            },
             Divider: {
               colorSplit: '#fff',
+            },
+            Spin: {
+              colorPrimary: '#fff',
+            },
+            Menu: {
+              colorBgContainer: 'darkcyan',
+              itemSelectedBg: 'darkcyan',
+            },
+            Tooltip: {
+              colorBgSpotlight: 'darkcyan',
             },
           },
         }}
@@ -61,7 +76,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <ToastProvider>
-                  <Layout>
+                  <Layout className="bg-transparent">
                     <Content className="min-h-screen h-screen hero-bg">
                       <Component {...pageProps} />
                     </Content>
