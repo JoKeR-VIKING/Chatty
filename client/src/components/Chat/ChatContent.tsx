@@ -79,7 +79,11 @@ const ChatContent: React.FC = () => {
                     mime.lookup(chat?.attachmentName) ||
                     'application/octet-stream'
                   ).startsWith('image/') ? (
-                    <Image className="chat-image" src={chat?.attachmentData} width={400} />
+                    <Image
+                      className="chat-image"
+                      src={chat?.attachmentData}
+                      width={400}
+                    />
                   ) : (
                     <AudioPlayer src={chat?.attachmentData} />
                   )}

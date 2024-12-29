@@ -44,8 +44,7 @@ export const useSendMessageWithAttachment = ({
     FormData
   >({
     mutationKey: ['send-message-with-attachment'],
-    mutationFn: (chat: FormData) =>
-      sendMessageWithAttachmentApi(chat),
+    mutationFn: (chat: FormData) => sendMessageWithAttachmentApi(chat),
     onSuccess: onSuccess,
     onError: onError,
     retry: false,
