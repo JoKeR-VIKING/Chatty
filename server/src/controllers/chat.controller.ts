@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import sharp from 'sharp';
+import mime from 'mime-types';
 
 import chatService from '@services/chat.service';
 import { IChatDocument, IRecentChat } from '@interfaces/chat.interface';
@@ -35,14 +37,33 @@ class ChatController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { messageFrom, messageTo, attachmentName, attachmentData } = req.body;
+    const { messageFrom, messageTo, attachmentName } = req.body;
+    const attachmentData = req.file?.buffer;
+    let mimeType = mime.lookup(attachmentName) || 'application/octet-stream';
+
+    if (mimeType === 'audio/wave') mimeType = 'audio/wav';
 
     try {
+      let compressedAttachmentData: string = attachmentData?.toString(
+        'base64',
+      ) as string;
+
+      if (mimeType.startsWith('image/')) {
+        compressedAttachmentData = (
+          await sharp(attachmentData)
+            .resize({ width: 1024 })
+            .jpeg({ quality: 80 })
+            .toBuffer()
+        ).toString('base64');
+      }
+
+      const base64Attachment = `data:${mimeType};base64,${compressedAttachmentData}`;
+
       const chat = await chatService.createMessage({
         messageFrom: messageFrom,
         messageTo: messageTo,
         attachmentName: attachmentName,
-        attachmentData: attachmentData,
+        attachmentData: base64Attachment,
       } as IChatDocument);
 
       res

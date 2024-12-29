@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 
 import ChatController from '@controllers/chat.controller';
 import { isAuthenticated } from '@middlewares/auth.middleware';
+import upload from '@utils/multer.config';
 
 export default () => {
   const router: Router = express.Router();
@@ -14,6 +15,7 @@ export default () => {
   router.post(
     '/chat/create/message-attachment',
     isAuthenticated,
+    upload.single('attachmentData'),
     ChatController.prototype.createMessageWithAttachment,
   );
 

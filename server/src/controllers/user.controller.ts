@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import userService from '@services/user.service';
 import { IUserDocument, IGoogleUser } from '@interfaces/user.interface';
-import { convertToBase64 } from '@utils/helpers';
+import { convertUrlToBase64 } from '@utils/helpers';
 
 class UserController {
   private async getUserDetails(accessToken: string) {
@@ -30,7 +30,7 @@ class UserController {
     try {
       const { accessToken } = req.body;
       const result = await UserController.prototype.getUserDetails(accessToken);
-      const base64url = await convertToBase64(result?.picture);
+      const base64url = await convertUrlToBase64(result?.picture);
 
       const user: IUserDocument = await userService.login({
         googleEmail: result?.email,
@@ -40,7 +40,7 @@ class UserController {
 
       req.session.userId = user?._id;
       req.session.user = {
-        id: user?._id,
+        _id: user?._id,
         googleEmail: result?.email,
         googleName: result?.given_name + ' ' + result?.family_name,
         googlePicture: base64url,
