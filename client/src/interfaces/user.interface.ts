@@ -5,7 +5,7 @@ export type IUserRequest = {
 };
 
 export type IUser = {
-  id: string;
+  _id: string;
   googleEmail: string;
   googleName: string;
   googlePicture: string;

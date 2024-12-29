@@ -1,0 +1,26 @@
+@layer components {
+  .audio-player-main {
+    @apply w-[20rem] h-[5rem] bg-primary rounded-lg;
+
+    .audio-player-button {
+      @apply bg-primary-dark border-none;
+      &:hover {
+        .ant-btn-icon {
+          @apply text-primary;
+        }
+      }
+
+      .ant-btn-icon {
+        @apply text-white;
+      }
+    }
+
+    .audio-player-timer {
+      @apply m-0 font-nunito font-extralight text-offwhite text-xs;
+    }
+
+    .audio-player-range {
+      @apply w-[60%];
+    }
+  }
+}

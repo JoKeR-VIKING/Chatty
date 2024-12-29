@@ -4,7 +4,6 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { IApiResponse } from '@src/interfaces';
 import {
   ICreateChatRequest,
-  ICreateChatWithAttachmentRequest,
   ICreateChatResponse,
   IRecentChatResponse,
   IGetChatResponse,
@@ -42,10 +41,10 @@ export const useSendMessageWithAttachment = ({
   return useMutation<
     AxiosResponse<ICreateChatResponse>,
     AxiosError<IApiResponse>,
-    ICreateChatWithAttachmentRequest
+    FormData
   >({
     mutationKey: ['send-message-with-attachment'],
-    mutationFn: (chat: ICreateChatWithAttachmentRequest) =>
+    mutationFn: (chat: FormData) =>
       sendMessageWithAttachmentApi(chat),
     onSuccess: onSuccess,
     onError: onError,

@@ -15,6 +15,7 @@ import store from '@store/index';
 
 import Logo from '@public/Logo.jpg';
 import 'animate.css';
+import 'video.js/dist/video-js.css';
 import '@styles/index.css';
 
 const { Content } = Layout;
@@ -67,6 +68,9 @@ const App = ({ Component, pageProps }: AppProps) => {
             },
             Tooltip: {
               colorBgSpotlight: 'darkcyan',
+            },
+            Slider: {
+              railBg: '#414a4c',
             },
           },
         }}

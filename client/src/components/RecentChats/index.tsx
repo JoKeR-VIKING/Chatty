@@ -22,7 +22,7 @@ const RecentChats = () => {
 
   const [recentChats, setRecentChats] = useState<MenuItemType[]>([]);
   const { isPending, isSuccess, data, error } = useGetRecentChats(
-    user?.id as string,
+    user?._id as string,
   );
 
   const handleSelect = (conversationId: string) => {
@@ -54,7 +54,7 @@ const RecentChats = () => {
                     <Flex vertical>
                       <Paragraph>{chat?.userDetails?.googleName}</Paragraph>
                       <TruncatedText
-                        text={`${chat?.messageFrom === user?.id ? 'You: ' : ''}${chat?.message}`}
+                        text={`${chat?.messageFrom === user?._id ? 'You: ' : ''}${chat?.message}`}
                       />
                     </Flex>
                   </Flex>

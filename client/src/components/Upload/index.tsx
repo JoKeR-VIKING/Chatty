@@ -27,6 +27,7 @@ const Upload: React.FC<Props> = (props) => {
 
         setFileList([file]);
       }}
+      accept="image/*"
     >
       <Button
         className="mr-3 icon-btn"

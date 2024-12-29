@@ -1,13 +1,13 @@
 import React, { useRef, useState, Dispatch, SetStateAction } from 'react';
 
-import { Button, UploadFile } from 'antd';
+import { Button } from 'antd';
 import { Icon } from '@iconify/react';
 
 import AudioIcon from '@components/AudioIcon';
 import { formatTime } from '@utils/helpers';
 
 type Props = {
-  setFileList: Dispatch<SetStateAction<UploadFile[]>>;
+  setFileList: Dispatch<SetStateAction<File[]>>;
 };
 
 const AudioRecorder: React.FC<Props> = (props) => {
@@ -42,12 +42,7 @@ const AudioRecorder: React.FC<Props> = (props) => {
           `AUD-${Date.now().toString()}.wav`,
           { type: 'audio/wav' },
         );
-        const audioUploadFile: UploadFile = {
-          uid: Date.now().toString(),
-          name: `AUD-${Date.now().toString()}.wav`,
-          url: URL.createObjectURL(audioFile),
-        };
-        setFileList([audioUploadFile]);
+        setFileList([audioFile]);
         clearInterval(timerInterval);
       };
 

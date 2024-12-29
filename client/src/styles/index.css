@@ -48,7 +48,7 @@
     @apply w-full p-7 h-16;
   }
   .chat-main {
-    @apply ml-[350px] bg-transparent m-6;
+    @apply ml-[350px] bg-transparent m-6 h-full self-center;
     scrollbar-width: none;
   }
   .chat-header {
@@ -73,19 +73,27 @@
     @apply bg-primary;
   }
   .chat-content {
-    @apply bg-white/10;
+    @apply bg-white/10 min-h-[80vh] max-h-[80vh] overflow-auto;
+    scrollbar-width: none;
+    scrollbar-gutter: stable;
   }
   .chat-content .chat-message-main {
-    @apply w-full h-full p-3;
+    @apply w-full min-h-[80vh] p-3;
   }
   .chat-content .chat-message-main .chat-message-box {
     @apply w-max max-w-[60%] rounded-lg relative;
   }
   .chat-content .chat-message-main .chat-message-box .chat-message {
-    @apply font-chivo font-extralight text-white p-3 m-0 text-justify;
+    @apply font-chivo font-extralight text-white p-3 m-0 text-justify relative;
+  }
+  .chat-content .chat-message-main .chat-message-box .chat-image {
+    @apply rounded-lg;
+  }
+  .chat-content .chat-message-main .chat-message-box .chat-image + .ant-image-mask {
+    @apply rounded-lg;
   }
   .chat-content .chat-message-main .chat-message-box .read-icon {
-    @apply mb-2 mr-2;
+    @apply absolute bottom-2 right-2;
   }
   .chat-content .chat-message-main .chat-time {
     @apply font-nunito font-light text-[0.65rem] mt-0.5 text-primary-dark;
@@ -223,7 +231,7 @@
 }
 @layer components {
   .recent-chats {
-    @apply w-full h-screen mt-6;
+    @apply w-full mt-6;
   }
   .recent-chats .ant-menu {
     @apply w-[90%] h-full bg-transparent;
@@ -256,6 +264,26 @@
   }
   .recent-chats .ant-menu .ant-menu-item-selected:hover {
     @apply text-primary;
+  }
+}
+@layer components {
+  .audio-player-main {
+    @apply w-[20rem] h-[5rem] bg-primary rounded-lg;
+  }
+  .audio-player-main .audio-player-button {
+    @apply bg-primary-dark border-none;
+  }
+  .audio-player-main .audio-player-button:hover .ant-btn-icon {
+    @apply text-primary;
+  }
+  .audio-player-main .audio-player-button .ant-btn-icon {
+    @apply text-white;
+  }
+  .audio-player-main .audio-player-timer {
+    @apply m-0 font-nunito font-extralight text-offwhite text-xs;
+  }
+  .audio-player-main .audio-player-range {
+    @apply w-[60%];
   }
 }
 html,

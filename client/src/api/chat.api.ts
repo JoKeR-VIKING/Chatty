@@ -3,7 +3,6 @@ import { AxiosResponse } from 'axios';
 import axios from '@utils/axios';
 import {
   ICreateChatRequest,
-  ICreateChatWithAttachmentRequest,
   ICreateChatResponse,
   IRecentChatResponse,
   IGetChatResponse,
@@ -16,11 +15,12 @@ export const sendMessageApi = (
 };
 
 export const sendMessageWithAttachmentApi = (
-  chat: ICreateChatWithAttachmentRequest,
+  chat: FormData,
 ): Promise<AxiosResponse<ICreateChatResponse>> => {
   return axios.post<ICreateChatResponse>(
     'chat/create/message-attachment',
     chat,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
   );
 };
 

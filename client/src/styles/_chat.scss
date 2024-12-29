@@ -15,7 +15,7 @@
   }
 
   .chat-main {
-    @apply ml-[350px] bg-transparent m-6;
+    @apply ml-[350px] bg-transparent m-6 h-full self-center;
     scrollbar-width: none;
   }
 
@@ -49,18 +49,28 @@
   }
 
   .chat-content {
-    @apply bg-white/10;
+    @apply bg-white/10 min-h-[80vh] max-h-[80vh] overflow-auto;
+    scrollbar-width: none;
+    scrollbar-gutter: stable;
     .chat-message-main {
-      @apply w-full h-full p-3;
+      @apply w-full min-h-[80vh] p-3;
 
       .chat-message-box {
         @apply w-max max-w-[60%] rounded-lg relative;
         .chat-message {
-          @apply font-chivo font-extralight text-white p-3 m-0 text-justify;
+          @apply font-chivo font-extralight text-white p-3 m-0 text-justify relative;
+        }
+
+        .chat-image {
+          @apply rounded-lg;
+        }
+
+        .chat-image + .ant-image-mask {
+          @apply rounded-lg;
         }
 
         .read-icon {
-          @apply mb-2 mr-2;
+          @apply absolute bottom-2 right-2;
         }
       }
 
