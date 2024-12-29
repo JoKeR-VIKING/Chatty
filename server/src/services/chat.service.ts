@@ -52,8 +52,28 @@ class ChatService {
         },
       },
       {
+        $addFields: {
+          toUser: {
+            $cond: {
+              if: { $ne: ['$result.messageFrom', new ObjectId(id)] },
+              then: '$result.messageFrom',
+              else: '$result.messageTo',
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'User',
+          localField: 'toUser',
+          foreignField: '_id',
+          as: 'userDetails',
+        },
+      },
+      {
         $project: {
           _id: '$result._id',
+          conversationId: '$result.conversationId',
           messageFrom: '$result.messageFrom',
           messageTo: '$result.messageTo',
           message: '$result.message',
@@ -63,10 +83,17 @@ class ChatService {
           isRead: '$result.isRead',
           isEdited: '$result.isEdited',
           isDeleted: '$result.isDeleted',
+          userDetails: { $arrayElemAt: ['$userDetails', 0] },
         },
       },
       { $sort: { createdAt: -1 } },
     ]).exec();
+  }
+
+  public async getChats(conversationId: string | ObjectId) {
+    const query = { conversationId: conversationId };
+
+    return await ChatModel.find(query).sort({ createdAt: 1 }).exec();
   }
 }
 

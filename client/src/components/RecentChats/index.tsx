@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Avatar, Flex, Menu, GetProp, MenuProps, Typography, Spin } from 'antd';
 
-import { IChat } from '@interfaces/chat.interface';
+import { IRecentChat } from '@interfaces/chat.interface';
 import { IUser } from '@interfaces/user.interface';
 import TruncatedText from '@components/TruncatedText';
-import { RootState } from '@src/store';
-// import { setSelectedChat } from '@store/chat.slice';
+import { AppDispatch, RootState } from '@src/store';
+import { setConversationId, setSelectedChat } from '@store/chat.slice';
 import { useGetRecentChats } from '@hooks/chat.hooks';
 import { useToast } from '@hooks/toast.hooks';
-import { getUserDetailsApi } from '@api/user.api';
 
 type MenuItemType = GetProp<MenuProps, 'items'>[number];
 
@@ -17,33 +16,43 @@ const { Paragraph } = Typography;
 
 const RecentChats = () => {
   const { createToast } = useToast();
-  // const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.user);
+  const { conversationId } = useSelector((state: RootState) => state.chat);
 
   const [recentChats, setRecentChats] = useState<MenuItemType[]>([]);
   const { isPending, isSuccess, data, error } = useGetRecentChats(
     user?.id as string,
   );
 
+  const handleSelect = (conversationId: string) => {
+    if (isPending) return;
+
+    const selectedChat: IRecentChat = data?.data?.chatList?.find(
+      (recentChat: IRecentChat) => recentChat.conversationId === conversationId,
+    ) as IRecentChat;
+
+    dispatch(setSelectedChat(selectedChat?.userDetails as IUser));
+    dispatch(setConversationId(conversationId));
+  };
+
   useEffect(() => {
     (async () => {
       if (!isPending) {
         if (isSuccess) {
           const userDetailsPromises = data?.data?.chatList?.map(
-            async (chat: IChat) => {
-              const userDetailResponse = await getUserDetailsApi(
-                chat.messageTo,
-              );
-              const userDetail: IUser = userDetailResponse?.data?.user;
-
+            async (chat: IRecentChat) => {
               return {
                 key: chat?.conversationId,
                 label: (
                   <Flex justify="start" align="center">
-                    <Avatar size="large" src={userDetail?.googlePicture} />
+                    <Avatar
+                      size="large"
+                      src={chat?.userDetails?.googlePicture}
+                    />
 
                     <Flex vertical>
-                      <Paragraph>{userDetail?.googleName}</Paragraph>
+                      <Paragraph>{chat?.userDetails?.googleName}</Paragraph>
                       <TruncatedText
                         text={`${chat?.messageFrom === user?.id ? 'You: ' : ''}${chat?.message}`}
                       />
@@ -74,7 +83,12 @@ const RecentChats = () => {
       {!recentChats.length ? (
         <Spin size="large" />
       ) : (
-        <Menu mode="vertical" items={recentChats} onSelect={() => {}} />
+        <Menu
+          mode="vertical"
+          items={recentChats}
+          onSelect={({ key }) => handleSelect(key)}
+          selectedKeys={[conversationId]}
+        />
       )}
     </Flex>
   );

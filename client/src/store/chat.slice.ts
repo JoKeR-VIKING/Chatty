@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IUser } from '@interfaces/user.interface';
 
 type SelectedChatState = {
-  user: IUser | null;
+  selectedChatUser: IUser | null;
+  conversationId: string;
 };
 
 const initialState: SelectedChatState = {
-  user: null,
+  selectedChatUser: null,
+  conversationId: '',
 };
 
 const chatSlice = createSlice({
@@ -15,13 +17,18 @@ const chatSlice = createSlice({
   initialState: initialState,
   reducers: {
     setSelectedChat: (state, action: PayloadAction<IUser>) => {
-      state.user = action.payload;
+      state.selectedChatUser = action.payload;
+    },
+    setConversationId: (state, action: PayloadAction<string>) => {
+      state.conversationId = action.payload;
     },
     removeSelectedChat: (state) => {
-      state.user = null;
+      state.selectedChatUser = null;
+      state.conversationId = '';
     },
   },
 });
 
-export const { setSelectedChat, removeSelectedChat } = chatSlice.actions;
+export const { setSelectedChat, setConversationId, removeSelectedChat } =
+  chatSlice.actions;
 export default chatSlice.reducer;

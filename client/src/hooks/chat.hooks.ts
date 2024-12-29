@@ -7,11 +7,13 @@ import {
   ICreateChatWithAttachmentRequest,
   ICreateChatResponse,
   IRecentChatResponse,
+  IGetChatResponse,
 } from '@interfaces/chat.interface';
 import {
   sendMessageApi,
   sendMessageWithAttachmentApi,
   getRecentChats,
+  getChats,
 } from '@api/chat.api';
 
 type CreateChatProps = {
@@ -59,5 +61,16 @@ export const useGetRecentChats = (messageFrom: string) => {
     staleTime: 0,
     refetchOnWindowFocus: false,
     enabled: !!messageFrom,
+  });
+};
+
+export const useGetChats = (conversationId: string) => {
+  return useQuery<AxiosResponse<IGetChatResponse>>({
+    queryKey: ['chat', conversationId],
+    queryFn: ({ signal }) => getChats(signal, conversationId),
+    retry: false,
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    enabled: !!conversationId,
   });
 };

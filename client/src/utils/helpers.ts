@@ -43,3 +43,13 @@ export const formatTime = (seconds: number) => {
   const remainingSeconds = seconds % 60;
   return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
+
+export const formatDateToTime = (dateStr: string) => {
+  const date = new Date(dateStr);
+
+  return date.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: undefined,
+  });
+};

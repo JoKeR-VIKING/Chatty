@@ -1,8 +1,11 @@
 import { ObjectId } from 'mongodb';
 import { Document } from 'mongoose';
 
+import { IUserDocument } from '@interfaces/user.interface';
+
 export interface IChatDocument extends Document {
   _id: string | ObjectId;
+  conversationId: string | ObjectId;
   messageFrom: string | ObjectId;
   messageTo: string | ObjectId;
   message?: string;
@@ -12,4 +15,8 @@ export interface IChatDocument extends Document {
   isRead?: boolean;
   isEdited?: boolean;
   isDeleted?: boolean;
+}
+
+export interface IRecentChat extends IChatDocument {
+  userDetails: IUserDocument;
 }

@@ -6,6 +6,7 @@ import {
   ICreateChatWithAttachmentRequest,
   ICreateChatResponse,
   IRecentChatResponse,
+  IGetChatResponse,
 } from '@interfaces/chat.interface';
 
 export const sendMessageApi = (
@@ -28,4 +29,11 @@ export const getRecentChats = (
   messageFrom: string,
 ): Promise<AxiosResponse<IRecentChatResponse>> => {
   return axios.get(`chat/recent-chats/${messageFrom}`, { signal });
+};
+
+export const getChats = (
+  signal: AbortSignal,
+  conversationId: string,
+): Promise<AxiosResponse<IGetChatResponse>> => {
+  return axios.get(`chat/conversation/${conversationId}`, { signal });
 };

@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import { useSelector } from 'react-redux';
+
 import {
   Layout,
   Input,
@@ -10,6 +12,7 @@ import {
 } from 'antd';
 import { Icon } from '@iconify/react';
 
+import { RootState } from '@src/store';
 import EmojiPicker from '@components/EmojiPicker';
 import Upload from '@components/Upload';
 import AudioRecorder from '@components/AudioRecorder';
@@ -19,10 +22,16 @@ const { Footer } = Layout;
 const { Paragraph } = Typography;
 
 const ChatFooter: React.FC = () => {
+  const { conversationId } = useSelector((state: RootState) => state.chat);
+
   const [message, setMessage] = useState('');
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const messageRef = useRef<InputRef>(null);
+
+  if (!conversationId) {
+    return <></>;
+  }
 
   return (
     <Footer className="chat-footer">

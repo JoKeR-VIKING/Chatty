@@ -24,10 +24,66 @@
     .chat-user-name {
       @apply font-chivo text-xl m-0 ml-3;
     }
+
+    .chat-menu-box {
+      @apply w-full h-14 p-6 cursor-pointer;
+    }
+  }
+
+  .chat-menu {
+    min-width: 0 !important;
+
+    .ant-dropdown-arrow {
+      &::before {
+        @apply bg-primary;
+      }
+    }
+
+    .close-chat-btn {
+      @apply flex justify-center items-center text-white font-chivo font-extralight;
+    }
+
+    .ant-dropdown-menu {
+      @apply bg-primary;
+    }
   }
 
   .chat-content {
     @apply bg-white/10;
+    .chat-message-main {
+      @apply w-full h-full p-3;
+
+      .chat-message-box {
+        @apply w-max max-w-[60%] rounded-lg relative;
+        .chat-message {
+          @apply font-chivo font-extralight text-white p-3 m-0 text-justify;
+        }
+
+        .read-icon {
+          @apply mb-2 mr-2;
+        }
+      }
+
+      .chat-time {
+        @apply font-nunito font-light text-[0.65rem] mt-0.5 text-primary-dark;
+      }
+
+      .chat-your {
+        @apply bg-primary;
+        &::after {
+          @apply absolute -bottom-1.5 right-0 w-0 h-0 border-8 border-solid border-primary border-l-transparent border-b-transparent;
+          content: '';
+        }
+      }
+
+      .chat-them {
+        @apply bg-softblack;
+        &::after {
+          @apply absolute -bottom-1.5 left-0 w-0 h-0 border-8 border-solid border-softblack border-r-transparent border-b-transparent;
+          content: '';
+        }
+      }
+    }
   }
 
   .chat-footer {

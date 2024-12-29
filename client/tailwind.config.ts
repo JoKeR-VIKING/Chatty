@@ -11,6 +11,8 @@ export default {
       colors: {
         'primary-dark': '#005353',
         primary: 'darkcyan',
+        offwhite: '#f5f5f5',
+        softblack: '#414a4c',
       },
     },
     plugins: [],

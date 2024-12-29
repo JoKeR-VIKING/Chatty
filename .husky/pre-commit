@@ -13,18 +13,18 @@ for dir in $dirs; do
   # TypeScript checks
   echo "Running TypeScript checks in $dir..."
   if pnpm type-check > /dev/null 2>&1; then
-    echo "✔ TypeScript checks passed in $dir"  # Green tick for success
+    echo -e "\033[32m✔ TypeScript checks passed in $dir\033[0m"  # Green tick for success (ANSI color green)
   else
-    echo "✖ TypeScript checks failed in $dir"  # Red cross for failure
+    echo -e "\033[31m✖ TypeScript checks failed in $dir\033[0m"  # Red cross for failure (ANSI color red)
     exit 1
   fi
 
   # Prettier check
   echo "Prettifying code in $dir..."
   if pnpm prettier --check . > /dev/null 2>&1; then
-    echo "✔ Prettier checks passed in $dir"  # Green tick for success
+    echo -e "\033[32m✔ Prettier checks passed in $dir\033[0m"  # Green tick for success
   else
-    echo "✖ Prettier checks failed in $dir"  # Red cross for failure
+    echo -e "\033[31m✖ Prettier checks failed in $dir\033[0m"  # Red cross for failure
     exit 1
   fi
 

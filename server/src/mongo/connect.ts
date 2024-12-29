@@ -8,7 +8,7 @@ export default () => {
     mongoose
       .connect(Config.MONGO_URI!, {
         tls: true,
-        tlsCertificateKeyFile: 'chatty-cert.pem',
+        tlsCertificateKeyFile: Config.MONGO_CERT_PATH,
         serverApi: mongoose.mongo.ServerApiVersion.v1,
       })
       .then(() => console.log('Successfully connected to database'))

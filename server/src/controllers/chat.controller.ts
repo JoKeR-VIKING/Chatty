@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
 import chatService from '@services/chat.service';
-import { IChatDocument } from '@interfaces/chat.interface';
+import { IChatDocument, IRecentChat } from '@interfaces/chat.interface';
 
 class ChatController {
   public async createMessage(
@@ -64,7 +64,7 @@ class ChatController {
     const { messageFrom } = req.params;
 
     try {
-      const chatList: IChatDocument[] =
+      const chatList: IRecentChat[] =
         await chatService.getChatList(messageFrom);
 
       res.status(StatusCodes.OK).json({
@@ -75,6 +75,27 @@ class ChatController {
       res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Error getting chat list' });
+      next(err);
+    }
+  }
+
+  public async getChats(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const { conversationId } = req.params;
+
+    try {
+      const chats: IChatDocument[] = await chatService.getChats(conversationId);
+
+      res
+        .status(StatusCodes.OK)
+        .json({ message: 'Successfully fetched chats', chats: chats });
+    } catch (err) {
+      res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: `Error getting chats for chat` });
       next(err);
     }
   }

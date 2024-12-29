@@ -22,6 +22,11 @@ export default () => {
     isAuthenticated,
     ChatController.prototype.getRecentChatList,
   );
+  router.get(
+    '/chat/conversation/:conversationId',
+    isAuthenticated,
+    ChatController.prototype.getChats,
+  );
 
   return router;
 };
