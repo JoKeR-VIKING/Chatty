@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Pacifico&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Pacifico&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -21,6 +21,10 @@
   .search-box:focus {
     @apply shadow-none;
   }
+  .search-box .ant-input-affix-wrapper {
+    border-radius: 1.5rem !important;
+    border: none !important;
+  }
   .search-box input {
     @apply border-none p-2 font-chivo;
   }
@@ -28,7 +32,7 @@
     box-shadow: none;
   }
   .search-box button {
-    @apply bg-white/10 rounded-lg border border-solid border-[darkcyan] text-white;
+    @apply bg-white/10 rounded-lg border border-solid border-[darkcyan] text-white hidden;
   }
   .sidebar-search {
     @apply w-[90%] rounded-3xl mt-5;
@@ -89,11 +93,7 @@
   .chat-content .chat-message-main .chat-message-box .chat-image {
     @apply rounded-lg;
   }
-  .chat-content
-    .chat-message-main
-    .chat-message-box
-    .chat-image
-    + .ant-image-mask {
+  .chat-content .chat-message-main .chat-message-box .chat-image + .ant-image-mask {
     @apply rounded-lg;
   }
   .chat-content .chat-message-main .chat-message-box .read-icon {
@@ -107,14 +107,14 @@
   }
   .chat-content .chat-message-main .chat-your::after {
     @apply absolute -bottom-1.5 right-0 w-0 h-0 border-8 border-solid border-primary border-l-transparent border-b-transparent;
-    content: '';
+    content: "";
   }
   .chat-content .chat-message-main .chat-them {
     @apply bg-softblack;
   }
   .chat-content .chat-message-main .chat-them::after {
     @apply absolute -bottom-1.5 left-0 w-0 h-0 border-8 border-solid border-softblack border-r-transparent border-b-transparent;
-    content: '';
+    content: "";
   }
   .chat-footer {
     @apply w-full flex justify-start items-center px-4 pt-2 pb-5 bg-white/20 shadow-lg rounded-b-lg;
@@ -303,12 +303,7 @@ body {
 }
 
 .hero-bg {
-  background-image: linear-gradient(
-      to right bottom,
-      rgba(77, 159, 159, 0.85),
-      rgba(77, 159, 159, 0.85)
-    ),
-    url(../public/Chat.png);
+  background-image: linear-gradient(to right bottom, rgba(77, 159, 159, 0.85), rgba(77, 159, 159, 0.85)), url(../public/Chat.png);
   background-size: cover;
   background-position: center;
 }

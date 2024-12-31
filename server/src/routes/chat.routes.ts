@@ -29,6 +29,11 @@ export default () => {
     isAuthenticated,
     ChatController.prototype.getChats,
   );
+  router.get(
+    '/chat/search-chat-message/:conversationId/:searchChatPrefix',
+    isAuthenticated,
+    ChatController.prototype.searchChats,
+  );
 
   return router;
 };

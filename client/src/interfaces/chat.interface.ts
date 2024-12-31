@@ -7,13 +7,6 @@ export type ICreateChatRequest = {
   message: string;
 };
 
-export type ICreateChatWithAttachmentRequest = {
-  messageFrom: string;
-  messageTo: string;
-  attachmentName: string;
-  attachmentData: File;
-};
-
 export type IChat = {
   _id: string;
   conversationId: string;
@@ -41,5 +34,9 @@ export type IRecentChatResponse = IApiResponse & {
 };
 
 export type IGetChatResponse = IApiResponse & {
+  chats: IChat[];
+};
+
+export type ISearchChatResponse = IApiResponse & {
   chats: IChat[];
 };

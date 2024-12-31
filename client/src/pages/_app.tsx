@@ -71,6 +71,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             },
             Slider: {
               railBg: '#414a4c',
+              railHoverBg: '#414a4c',
             },
           },
         }}

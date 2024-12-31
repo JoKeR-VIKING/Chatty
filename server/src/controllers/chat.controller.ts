@@ -5,6 +5,7 @@ import mime from 'mime-types';
 
 import chatService from '@services/chat.service';
 import { IChatDocument, IRecentChat } from '@interfaces/chat.interface';
+import { chatSocketObject } from '@sockets/chat.socket';
 
 class ChatController {
   public async createMessage(
@@ -20,6 +21,19 @@ class ChatController {
         messageTo: messageTo,
         message: message,
       } as IChatDocument);
+
+      chatSocketObject.to(messageFrom).emit('new-message', chat);
+      chatSocketObject.to(messageTo).emit('new-message', chat);
+
+      const messageFromRecentChats = await chatService.getChatList(messageFrom);
+      const messageToRecentChats = await chatService.getChatList(messageTo);
+
+      chatSocketObject
+        .to(messageFrom)
+        .emit('recent-message', messageFromRecentChats);
+      chatSocketObject
+        .to(messageTo)
+        .emit('recent-message', messageToRecentChats);
 
       res
         .status(StatusCodes.OK)
@@ -65,6 +79,19 @@ class ChatController {
         attachmentName: attachmentName,
         attachmentData: base64Attachment,
       } as IChatDocument);
+
+      chatSocketObject.to(messageFrom).emit('new-message', chat);
+      chatSocketObject.to(messageTo).emit('new-message', chat);
+
+      const messageFromRecentChats = await chatService.getChatList(messageFrom);
+      const messageToRecentChats = await chatService.getChatList(messageTo);
+
+      chatSocketObject
+        .to(messageFrom)
+        .emit('recent-message', messageFromRecentChats);
+      chatSocketObject
+        .to(messageTo)
+        .emit('recent-message', messageToRecentChats);
 
       res
         .status(StatusCodes.OK)
@@ -117,6 +144,31 @@ class ChatController {
       res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: `Error getting chats for chat` });
+      next(err);
+    }
+  }
+
+  public async searchChats(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const { conversationId, searchChatPrefix } = req.params;
+
+    try {
+      const chats: IChatDocument[] = await chatService.searchChats(
+        conversationId,
+        searchChatPrefix,
+      );
+
+      res.status(StatusCodes.OK).json({
+        message: 'Successfully fetched chats for search prefix',
+        chats: chats,
+      });
+    } catch (err) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: `Error getting chats for search prefix ${searchChatPrefix}`,
+      });
       next(err);
     }
   }

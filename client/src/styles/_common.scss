@@ -19,6 +19,11 @@
       @apply shadow-none;
     }
 
+    .ant-input-affix-wrapper {
+      border-radius: 1.5rem !important;
+      border: none !important;
+    }
+
     input {
       @apply border-none p-2 font-chivo;
       &:focus {
@@ -26,7 +31,7 @@
       }
     }
     button {
-      @apply bg-white/10 rounded-lg border border-solid border-[darkcyan] text-white;
+      @apply bg-white/10 rounded-lg border border-solid border-[darkcyan] text-white hidden;
     }
   }
 

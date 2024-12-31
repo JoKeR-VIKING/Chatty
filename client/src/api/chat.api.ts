@@ -6,6 +6,7 @@ import {
   ICreateChatResponse,
   IRecentChatResponse,
   IGetChatResponse,
+  ISearchChatResponse,
 } from '@interfaces/chat.interface';
 
 export const sendMessageApi = (
@@ -36,4 +37,15 @@ export const getChats = (
   conversationId: string,
 ): Promise<AxiosResponse<IGetChatResponse>> => {
   return axios.get(`chat/conversation/${conversationId}`, { signal });
+};
+
+export const getSearchChats = (
+  signal: AbortSignal,
+  conversationId: string,
+  searchChatPrefix: string,
+): Promise<AxiosResponse<ISearchChatResponse>> => {
+  return axios.get(
+    `chat/search-chat-message/${conversationId}/${searchChatPrefix}`,
+    { signal },
+  );
 };

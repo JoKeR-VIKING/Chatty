@@ -95,6 +95,17 @@ class ChatService {
 
     return await ChatModel.find(query).sort({ createdAt: 1 }).exec();
   }
+
+  public async searchChats(conversationId: string, searchPrefix: string) {
+    const query = {
+      $and: [
+        { conversationId: new ObjectId(conversationId) },
+        { message: { $regex: searchPrefix, $options: 'i' } },
+      ],
+    };
+
+    return await ChatModel.find(query).exec();
+  }
 }
 
 const chatService = new ChatService();

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosRequestHeaders, AxiosResponse } from 'axios';
 
 import { IApiResponse } from '@src/interfaces';
 import {
@@ -7,12 +7,14 @@ import {
   ICreateChatResponse,
   IRecentChatResponse,
   IGetChatResponse,
+  ISearchChatResponse,
 } from '@interfaces/chat.interface';
 import {
   sendMessageApi,
   sendMessageWithAttachmentApi,
   getRecentChats,
   getChats,
+  getSearchChats,
 } from '@api/chat.api';
 
 type CreateChatProps = {
@@ -71,4 +73,36 @@ export const useGetChats = (conversationId: string) => {
     refetchOnWindowFocus: false,
     enabled: !!conversationId,
   });
+};
+
+export const useSearchChats = (
+  conversationId: string,
+  searchPrefix: string,
+) => {
+  return useQuery<AxiosResponse<ISearchChatResponse>, AxiosError<IApiResponse>>(
+    {
+      queryKey: ['chat-search', searchPrefix],
+      queryFn: ({ signal }) =>
+        getSearchChats(signal, conversationId, searchPrefix),
+      retry: false,
+      staleTime: 0,
+      refetchOnWindowFocus: false,
+      initialData: () => {
+        const mockResponse: AxiosResponse<ISearchChatResponse> = {
+          data: {
+            message: 'Empty query',
+            chats: [],
+          },
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config: {
+            headers: {} as AxiosRequestHeaders,
+          },
+        };
+        return mockResponse;
+      },
+      enabled: !!searchPrefix,
+    },
+  );
 };

@@ -5,6 +5,7 @@ import { NextRouter, useRouter } from 'next/router';
 import { AppDispatch } from '@src/store';
 import { setUser, clearUser } from '@store/user.slice';
 import { useUserStatus } from '@hooks/user.hooks';
+import socket from '@sockets/index';
 
 type Props = {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ const AuthProvider: React.FC<Props> = (props) => {
       if (!isPending) {
         if (isSuccess) {
           dispatch(setUser(data?.data?.user));
+          socket.emit('register', data?.data?.user?._id);
         } else {
           await router.replace('/auth');
           dispatch(clearUser());

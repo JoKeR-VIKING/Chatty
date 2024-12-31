@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  Dispatch,
+  SetStateAction,
+  MutableRefObject,
+} from 'react';
 import { useSelector } from 'react-redux';
 import mime from 'mime-types';
 
@@ -7,41 +14,106 @@ import { Icon } from '@iconify/react';
 
 import { IChat } from '@interfaces/chat.interface';
 import AudioPlayer from '@components/AudioPlayer';
+import ChatText from '@components/Chat/ChatText';
 import { RootState } from '@src/store';
-import { useGetChats } from '@hooks/chat.hooks';
+import { useGetChats, useSearchChats } from '@hooks/chat.hooks';
 import { useToast } from '@hooks/toast.hooks';
 import { formatDateToTime } from '@utils/helpers';
+import socket from '@sockets/index';
 import NoChatSelectedImage from '@public/NoChatSelected.png';
 
 const { Content } = Layout;
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 
-const ChatContent: React.FC = () => {
+type Props = {
+  setSearchChats: Dispatch<SetStateAction<IChat[]>>;
+  messagesRef: MutableRefObject<Map<string, HTMLElement>>;
+};
+
+const ChatContent: React.FC<Props> = (props) => {
+  const { setSearchChats, messagesRef } = props;
+
   const { createToast } = useToast();
   const { user } = useSelector((state: RootState) => state.user);
-  const { conversationId } = useSelector((state: RootState) => state.chat);
+  const { conversationId, searchChatPrefix } = useSelector(
+    (state: RootState) => state.chat,
+  );
 
   const [chats, setChats] = useState<IChat[]>([]);
+  const [initial, setInitial] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const { isPending, isSuccess, data, error } = useGetChats(conversationId);
+  const {
+    isPending: searchChatPending,
+    isSuccess: searchChatSuccess,
+    data: searchChatData,
+    error: searchChatError,
+  } = useSearchChats(conversationId, searchChatPrefix);
+
+  const setMessageRef = (id: string, node: HTMLElement | null) => {
+    if (node) messagesRef.current.set(id, node);
+    else messagesRef.current.delete(id);
+  };
 
   useEffect(() => {
     if (!isPending) {
       if (isSuccess) {
         setChats(data?.data?.chats);
-
-        const scrollToBottom = () => {
-          if (contentRef?.current)
-            contentRef.current.scrollTop = contentRef.current?.scrollHeight;
-        };
-
-        setTimeout(scrollToBottom, 0);
       } else {
         createToast('error', error.message);
       }
     }
   }, [isPending, isSuccess, data, error, createToast]);
+
+  useEffect(() => {
+    if (!searchChatPending) {
+      if (searchChatSuccess) {
+        setSearchChats(searchChatData?.data?.chats);
+      } else {
+        createToast('error', searchChatError.message);
+      }
+    }
+  }, [
+    searchChatPending,
+    searchChatSuccess,
+    searchChatData,
+    searchChatError,
+    createToast,
+    setSearchChats,
+  ]);
+
+  useEffect(() => {
+    const handleNewMessage = (newChat: IChat) => {
+      if (newChat?.conversationId !== conversationId) return;
+
+      setChats((prevState) => [...prevState, newChat]);
+    };
+
+    socket.on('new-message', handleNewMessage);
+
+    return () => {
+      socket.off('new-message', handleNewMessage);
+    };
+  }, [conversationId]);
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (contentRef?.current) {
+        if (initial) {
+          contentRef.current.scrollTop = contentRef.current.scrollHeight;
+          setInitial(false);
+        } else {
+          contentRef.current.scrollTo({
+            top: contentRef.current?.scrollHeight,
+            behavior: 'smooth',
+          });
+        }
+      }
+    };
+
+    setTimeout(scrollToBottom, 0);
+  }, [chats, initial]);
 
   if (!conversationId) {
     return (
@@ -59,6 +131,7 @@ const ChatContent: React.FC = () => {
       <Flex className="chat-message-main" vertical justify="flex-end">
         {chats?.map((chat: IChat) => (
           <Flex
+            ref={(node) => setMessageRef(chat?._id, node)}
             key={chat?._id}
             className={`${chat?.messageFrom === user?._id ? 'items-end' : ''}`}
             vertical
@@ -68,11 +141,11 @@ const ChatContent: React.FC = () => {
               align="flex-end"
             >
               {chat?.message ? (
-                <Paragraph
-                  className={`chat-message ${chat?.messageFrom === user?._id && 'mb-3'}`}
-                >
-                  {chat?.message}
-                </Paragraph>
+                <ChatText
+                  messageFrom={chat?.messageFrom}
+                  message={chat?.message}
+                  searchTerm={searchChatPrefix}
+                />
               ) : (
                 <>
                   {(

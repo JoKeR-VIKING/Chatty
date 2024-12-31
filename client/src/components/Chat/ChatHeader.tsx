@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect, MutableRefObject } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import debounce from 'lodash.debounce';
 
 import {
   Layout,
@@ -13,16 +14,26 @@ import {
 } from 'antd';
 import { Icon } from '@iconify/react';
 
+import { IChat } from '@interfaces/chat.interface';
 import { AppDispatch, RootState } from '@src/store';
-import { removeSelectedChat } from '@store/chat.slice';
+import { removeSelectedChat, setSearchChatPrefix } from '@store/chat.slice';
 
 const { Header } = Layout;
 const { Paragraph } = Typography;
 const { Search } = Input;
 
-const ChatHeader: React.FC = () => {
+type Props = {
+  searchChats: IChat[];
+  messagesRef: MutableRefObject<Map<string, HTMLElement>>;
+};
+
+const ChatHeader: React.FC<Props> = (props) => {
+  const { searchChats, messagesRef } = props;
+
   const dispatch: AppDispatch = useDispatch();
   const { selectedChatUser } = useSelector((state: RootState) => state.chat);
+
+  const [searchIndex, setSearchIndex] = useState(-1);
 
   const menuItems: MenuProps['items'] = [
     {
@@ -38,6 +49,21 @@ const ChatHeader: React.FC = () => {
       ),
     },
   ];
+
+  const scrollToMessage = (id: string) => {
+    const messageNode = messagesRef.current.get(id);
+    if (messageNode)
+      messageNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const handleSearch = debounce(async (searchPrefix: string) => {
+    dispatch(setSearchChatPrefix(searchPrefix));
+  }, 500);
+
+  useEffect(() => {
+    setSearchIndex(searchChats.length - 2);
+    scrollToMessage(searchChats[searchChats.length - 1]?._id);
+  }, [searchChats]);
 
   if (!selectedChatUser) {
     return <></>;
@@ -65,7 +91,33 @@ const ChatHeader: React.FC = () => {
         </Flex>
       </Dropdown>
 
-      <Search size="large" className="search-box" placeholder="Search..." />
+      <Flex className="w-[80%]" justify="center" align="center">
+        <Search
+          size="large"
+          className="search-box pr-0 border-none"
+          placeholder="Search..."
+          allowClear
+          onChange={(e) => handleSearch(e.target.value)}
+        />
+        <Button
+          className="glass-btn p-5 ml-3 mr-1 border border-solid border-offwhite rounded-full"
+          icon={<Icon icon={'fe:arrow-up'} />}
+          disabled={searchIndex < 0}
+          onClick={() => {
+            setSearchIndex(searchIndex - 1);
+            scrollToMessage(searchChats[searchIndex]?._id);
+          }}
+        />
+        <Button
+          className="glass-btn p-5 ml-1 mr-3 border border-solid border-offwhite rounded-full"
+          icon={<Icon icon={'fe:arrow-down'} />}
+          disabled={searchIndex < -1 || searchIndex >= searchChats.length - 1}
+          onClick={() => {
+            setSearchIndex(searchIndex + 1);
+            scrollToMessage(searchChats[searchIndex]?._id);
+          }}
+        />
+      </Flex>
     </Header>
   );
 };

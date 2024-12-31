@@ -4,12 +4,16 @@ import mongoStore from 'connect-mongo';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { ObjectId, ServerApiVersion } from 'mongodb';
+import { createServer, Server as HttpServer } from 'http';
+import { Server } from 'socket.io';
 import 'express-async-errors';
 
 import connect from '@mongo/connect';
 import routes from '@routes/index';
 import Config from '@utils/config';
-import { ObjectId, ServerApiVersion } from 'mongodb';
+
+import ChatSocketHandler from '@sockets/chat.socket';
 
 declare module 'express-session' {
   interface SessionData {
@@ -76,9 +80,25 @@ class App {
     connect();
   };
 
+  public setupSocketIo = (server: HttpServer) => {
+    const io = new Server(server, {
+      cors: {
+        origin: Config.CLIENT_URL,
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      },
+    });
+
+    const chatSocketHandler = new ChatSocketHandler(io);
+    chatSocketHandler.listen();
+  };
+
   public startServer = () => {
-    this.app.listen(Config.PORT, () => {
-      console.log(`Server is running on port ${Config.PORT}`);
+    const server: HttpServer = createServer(this.app);
+    this.setupSocketIo(server);
+
+    server.listen(Config.PORT, () => {
+      console.log(`Server listening on port ${Config.PORT}`);
     });
   };
 

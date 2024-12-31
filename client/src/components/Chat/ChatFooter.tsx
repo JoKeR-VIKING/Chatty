@@ -1,15 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, KeyboardEvent } from 'react';
 import { useSelector } from 'react-redux';
-import { AxiosResponse, AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 
 import { Layout, Button, Input, InputRef, Flex, Typography } from 'antd';
 import { Icon } from '@iconify/react';
 
 import { RootState } from '@src/store';
-import {
-  ICreateChatRequest,
-  ICreateChatResponse,
-} from '@interfaces/chat.interface';
+import { ICreateChatRequest } from '@interfaces/chat.interface';
 import EmojiPicker from '@components/EmojiPicker';
 import Upload from '@components/Upload';
 import AudioRecorder from '@components/AudioRecorder';
@@ -36,10 +33,9 @@ const ChatFooter: React.FC = () => {
   const [fileList, setFileList] = useState<File[]>([]);
   const messageRef = useRef<InputRef>(null);
 
-  const onSuccess = (data: AxiosResponse<ICreateChatResponse>) => {
+  const onSuccess = () => {
     setMessage('');
     setFileList([]);
-    console.log(data);
   };
 
   const onError = (error: AxiosError<IApiResponse>) => {
@@ -70,6 +66,17 @@ const ChatFooter: React.FC = () => {
     formData.append('attachmentData', fileList[0] as File);
 
     mutateSendMessageWithAttachment(formData);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (fileList.length > 0) {
+        sendMessageWithAttachment();
+      } else {
+        sendMessage();
+      }
+    }
   };
 
   if (!conversationId) {
@@ -116,6 +123,7 @@ const ChatFooter: React.FC = () => {
           placeholder="Write your message here..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           autoSize={{ minRows: 2, maxRows: 2 }}
         />
       )}

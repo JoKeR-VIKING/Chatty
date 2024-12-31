@@ -16,6 +16,7 @@
       "@mongo/*": ["./src/mongo/*"],
       "@routes/*": ["./src/routes/*"],
       "@services/*": ["./src/services/*"],
+      "@sockets/*": ["./src/sockets/*"],
       "@utils/*": ["./src/utils/*"],
       "@src/*": ["./src/*"]
     }

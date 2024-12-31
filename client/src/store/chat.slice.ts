@@ -5,11 +5,13 @@ import { IUser } from '@interfaces/user.interface';
 type SelectedChatState = {
   selectedChatUser: IUser | null;
   conversationId: string;
+  searchChatPrefix: string;
 };
 
 const initialState: SelectedChatState = {
   selectedChatUser: null,
   conversationId: '',
+  searchChatPrefix: '',
 };
 
 const chatSlice = createSlice({
@@ -26,9 +28,16 @@ const chatSlice = createSlice({
       state.selectedChatUser = null;
       state.conversationId = '';
     },
+    setSearchChatPrefix: (state, action: PayloadAction<string>) => {
+      state.searchChatPrefix = action.payload;
+    },
   },
 });
 
-export const { setSelectedChat, setConversationId, removeSelectedChat } =
-  chatSlice.actions;
+export const {
+  setSelectedChat,
+  setConversationId,
+  removeSelectedChat,
+  setSearchChatPrefix,
+} = chatSlice.actions;
 export default chatSlice.reducer;
