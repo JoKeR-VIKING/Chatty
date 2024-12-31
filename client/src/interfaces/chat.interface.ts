@@ -35,6 +35,7 @@ export type IRecentChatResponse = IApiResponse & {
 
 export type IGetChatResponse = IApiResponse & {
   chats: IChat[];
+  totalPages: number;
 };
 
 export type ISearchChatResponse = IApiResponse & {

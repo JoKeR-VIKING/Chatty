@@ -64,6 +64,9 @@
   .chat-header .chat-menu-box {
     @apply w-full h-14 p-6 cursor-pointer;
   }
+  .chat-header .ant-input-clear-icon {
+    @apply text-white;
+  }
   .chat-menu {
     min-width: 0 !important;
   }

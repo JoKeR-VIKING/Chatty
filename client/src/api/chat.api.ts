@@ -35,8 +35,11 @@ export const getRecentChats = (
 export const getChats = (
   signal: AbortSignal,
   conversationId: string,
+  pageNumber: number,
 ): Promise<AxiosResponse<IGetChatResponse>> => {
-  return axios.get(`chat/conversation/${conversationId}`, { signal });
+  return axios.get(`chat/conversation/${conversationId}/${pageNumber}`, {
+    signal,
+  });
 };
 
 export const getSearchChats = (

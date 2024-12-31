@@ -132,14 +132,19 @@ class ChatController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { conversationId } = req.params;
+    const { conversationId, pageNumber } = req.params;
 
     try {
-      const chats: IChatDocument[] = await chatService.getChats(conversationId);
+      const [chats, totalPages] = await chatService.getChats(
+        conversationId,
+        parseInt(pageNumber),
+      );
 
-      res
-        .status(StatusCodes.OK)
-        .json({ message: 'Successfully fetched chats', chats: chats });
+      res.status(StatusCodes.OK).json({
+        message: 'Successfully fetched chats',
+        chats: chats,
+        totalPages: totalPages,
+      });
     } catch (err) {
       res
         .status(StatusCodes.BAD_REQUEST)

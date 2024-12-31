@@ -90,10 +90,24 @@ class ChatService {
     ]).exec();
   }
 
-  public async getChats(conversationId: string | ObjectId) {
+  public async getChats(conversationId: string | ObjectId, pageNumber: number) {
+    const pageLimit = 13;
+    const skipMessages = (pageNumber - 1) * pageLimit;
     const query = { conversationId: conversationId };
 
-    return await ChatModel.find(query).sort({ createdAt: 1 }).exec();
+    const totalPages: number = Math.ceil(
+      (await ChatModel.countDocuments({
+        conversationId,
+      })) / pageLimit,
+    );
+
+    const chats = await ChatModel.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skipMessages)
+      .limit(pageLimit)
+      .exec();
+
+    return [chats.reverse(), totalPages];
   }
 
   public async searchChats(conversationId: string, searchPrefix: string) {

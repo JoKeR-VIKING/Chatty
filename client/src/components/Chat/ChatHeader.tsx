@@ -101,7 +101,7 @@ const ChatHeader: React.FC<Props> = (props) => {
         />
         <Button
           className="glass-btn p-5 ml-3 mr-1 border border-solid border-offwhite rounded-full"
-          icon={<Icon icon={'fe:arrow-up'} />}
+          icon={<Icon color="darkcyan" icon={'fe:arrow-up'} />}
           disabled={searchIndex < 0}
           onClick={() => {
             setSearchIndex(searchIndex - 1);
@@ -110,7 +110,7 @@ const ChatHeader: React.FC<Props> = (props) => {
         />
         <Button
           className="glass-btn p-5 ml-1 mr-3 border border-solid border-offwhite rounded-full"
-          icon={<Icon icon={'fe:arrow-down'} />}
+          icon={<Icon color="darkcyan" icon={'fe:arrow-down'} />}
           disabled={searchIndex < -1 || searchIndex >= searchChats.length - 1}
           onClick={() => {
             setSearchIndex(searchIndex + 1);

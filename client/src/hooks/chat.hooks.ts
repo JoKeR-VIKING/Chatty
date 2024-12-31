@@ -64,14 +64,14 @@ export const useGetRecentChats = (messageFrom: string) => {
   });
 };
 
-export const useGetChats = (conversationId: string) => {
+export const useGetChats = (conversationId: string, pageNumber: number) => {
   return useQuery<AxiosResponse<IGetChatResponse>>({
-    queryKey: ['chat', conversationId],
-    queryFn: ({ signal }) => getChats(signal, conversationId),
+    queryKey: ['chat', conversationId, pageNumber],
+    queryFn: ({ signal }) => getChats(signal, conversationId, pageNumber),
     retry: false,
     staleTime: 0,
     refetchOnWindowFocus: false,
-    enabled: !!conversationId,
+    enabled: Boolean(conversationId && pageNumber),
   });
 };
 

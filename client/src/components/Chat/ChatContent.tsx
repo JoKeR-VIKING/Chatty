@@ -41,9 +41,15 @@ const ChatContent: React.FC<Props> = (props) => {
 
   const [chats, setChats] = useState<IChat[]>([]);
   const [initial, setInitial] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isSwitchingChat, setIsSwitchingChat] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const { isPending, isSuccess, data, error } = useGetChats(conversationId);
+  const { isPending, isSuccess, data, error } = useGetChats(
+    conversationId,
+    pageNumber,
+  );
   const {
     isPending: searchChatPending,
     isSuccess: searchChatSuccess,
@@ -57,22 +63,36 @@ const ChatContent: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    if (!isPending) {
-      if (isSuccess) {
-        setChats(data?.data?.chats);
-      } else {
-        createToast('error', error.message);
-      }
-    }
-  }, [isPending, isSuccess, data, error, createToast]);
+    setChats([]);
+    setPageNumber(1);
+    setInitial(true);
+    setIsSwitchingChat(true);
+  }, [conversationId]);
 
   useEffect(() => {
-    if (!searchChatPending) {
-      if (searchChatSuccess) {
-        setSearchChats(searchChatData?.data?.chats);
-      } else {
-        createToast('error', searchChatError.message);
-      }
+    if (!isPending && isSuccess) {
+      setTotalPages(data?.data?.totalPages);
+      setChats((prevState: IChat[]) => {
+        if (isSwitchingChat) {
+          setIsSwitchingChat(false);
+          return data.data.chats;
+        }
+
+        const newMessages = data.data.chats.filter(
+          (newChat) => !prevState.some((chat) => chat._id === newChat._id),
+        );
+        return [...newMessages, ...prevState];
+      });
+    } else if (error) {
+      createToast('error', error.message);
+    }
+  }, [isPending, isSuccess, data, error, isSwitchingChat, createToast]);
+
+  useEffect(() => {
+    if (!searchChatPending && searchChatSuccess) {
+      setSearchChats(searchChatData?.data?.chats);
+    } else if (searchChatError) {
+      createToast('error', searchChatError.message);
     }
   }, [
     searchChatPending,
@@ -87,7 +107,12 @@ const ChatContent: React.FC<Props> = (props) => {
     const handleNewMessage = (newChat: IChat) => {
       if (newChat?.conversationId !== conversationId) return;
 
-      setChats((prevState) => [...prevState, newChat]);
+      setChats((prevState) => {
+        if (!prevState.some((chat) => chat._id === newChat._id)) {
+          return [...prevState, newChat];
+        }
+        return prevState;
+      });
     };
 
     socket.on('new-message', handleNewMessage);
@@ -99,21 +124,43 @@ const ChatContent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const scrollToBottom = () => {
-      if (contentRef?.current) {
-        if (initial) {
-          contentRef.current.scrollTop = contentRef.current.scrollHeight;
-          setInitial(false);
-        } else {
-          contentRef.current.scrollTo({
-            top: contentRef.current?.scrollHeight,
-            behavior: 'smooth',
-          });
-        }
+      if (!chats.length || !contentRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
+      const isAtBottom = scrollHeight - (scrollTop + clientHeight) <= 80;
+
+      if (initial) {
+        contentRef.current.scrollTop = scrollHeight;
+        setInitial(false);
+      } else if (isAtBottom) {
+        contentRef.current.scrollTo({
+          top: scrollHeight,
+          behavior: 'smooth',
+        });
       }
     };
 
     setTimeout(scrollToBottom, 0);
   }, [chats, initial]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current || isPending) return;
+
+      const { scrollTop } = contentRef.current;
+      if (scrollTop < 100)
+        setPageNumber((prevState) => {
+          if (prevState === totalPages) return prevState;
+
+          return prevState + 1;
+        });
+    };
+
+    const container = contentRef.current;
+    container?.addEventListener('scroll', handleScroll);
+
+    return () => container?.removeEventListener('scroll', handleScroll);
+  }, [totalPages, chats.length, isPending]);
 
   if (!conversationId) {
     return (
@@ -137,7 +184,10 @@ const ChatContent: React.FC<Props> = (props) => {
             vertical
           >
             <Flex
-              className={`chat-message-box ${chat?.message && (chat?.messageFrom === user?._id ? 'chat-your' : 'chat-them')}`}
+              className={`chat-message-box ${
+                chat?.message &&
+                (chat?.messageFrom === user?._id ? 'chat-your' : 'chat-them')
+              }`}
               align="flex-end"
             >
               {chat?.message ? (
@@ -165,7 +215,9 @@ const ChatContent: React.FC<Props> = (props) => {
 
               {chat?.messageFrom === user?._id && (
                 <Icon
-                  className={`read-icon ${!chat?.isRead ? 'text-softblack' : 'text-[#19c5ff]'}`}
+                  className={`read-icon ${
+                    !chat?.isRead ? 'text-softblack' : 'text-[#19c5ff]'
+                  }`}
                   width="20"
                   height="20"
                   icon="charm:tick-double"
@@ -174,7 +226,9 @@ const ChatContent: React.FC<Props> = (props) => {
             </Flex>
             <Flex align="center">
               <Text
-                className={`chat-time ${chat?.messageFrom === user?._id ? 'mr-1.5' : 'ml-1.5'}`}
+                className={`chat-time ${
+                  chat?.messageFrom === user?._id ? 'mr-1.5' : 'ml-1.5'
+                }`}
               >
                 {formatDateToTime(chat?.createdAt)}
               </Text>

@@ -25,8 +25,8 @@ export default () => {
     ChatController.prototype.getRecentChatList,
   );
   router.get(
-    '/chat/conversation/:conversationId',
-    isAuthenticated,
+    '/chat/conversation/:conversationId/:pageNumber',
+    // isAuthenticated,
     ChatController.prototype.getChats,
   );
   router.get(
