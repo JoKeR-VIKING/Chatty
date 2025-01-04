@@ -72,8 +72,6 @@ class App {
         credentials: true,
       }),
     );
-
-
   };
 
   public applicationRoutes = () => {
