@@ -67,7 +67,7 @@ const App = ({ Component, pageProps }: AppProps) => {
               itemSelectedBg: 'darkcyan',
             },
             Tooltip: {
-              colorBgSpotlight: 'darkcyan',
+              colorBgSpotlight: '#414a4c',
             },
             Slider: {
               railBg: '#414a4c',
@@ -82,7 +82,7 @@ const App = ({ Component, pageProps }: AppProps) => {
               <AuthProvider>
                 <ToastProvider>
                   <Layout className="bg-transparent">
-                    <Content className="min-h-screen h-screen hero-bg">
+                    <Content className="min-h-screen hero-bg">
                       <Component {...pageProps} />
                     </Content>
                   </Layout>

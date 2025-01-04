@@ -35,7 +35,48 @@
     }
   }
 
+  .search-box-main {
+    @apply w-full;
+    .ant-tooltip {
+      box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+  }
+
   .sidebar-search {
     @apply w-[90%] rounded-3xl mt-5;
+  }
+
+  .ant-tooltip-inner:has(.reaction-bar) {
+    @apply rounded-3xl;
+  }
+
+  .reaction-bar {
+    button {
+      @apply mx-1;
+      &:hover {
+        @apply scale-125;
+      }
+    }
+
+    .selected-reaction {
+      @apply bg-white/10 rounded-full;
+    }
+  }
+
+  .reaction-box {
+    @apply absolute -bottom-2.5 rounded-full bg-transparent p-[0.2rem];
+  }
+
+  .scroll-to-bottom-btn {
+    @apply sticky z-50 left-1/2 bottom-2 -translate-x-1/2 bg-softblack text-white rounded-full invisible -translate-y-10;
+    transition: visibility 0.3s, transform 0.3s ease;
+
+    &.btn-visible {
+      @apply visible translate-y-0;
+    }
+
+    &.btn-hidden {
+      @apply invisible -translate-y-10;
+    }
   }
 }

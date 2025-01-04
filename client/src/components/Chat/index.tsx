@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
+
 import { Layout } from 'antd';
 
-import { IChat } from '@interfaces/chat.interface.ts';
+import { IChat } from '@interfaces/chat.interface';
 import ChatHeader from '@components/Chat/ChatHeader';
 import ChatContent from '@components/Chat/ChatContent';
 import ChatFooter from '@components/Chat/ChatFooter';

@@ -15,7 +15,7 @@ import socket from '@sockets/index';
 
 type MenuItemType = GetProp<MenuProps, 'items'>[number];
 
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 
 const RecentChats = () => {
   const { createToast } = useToast();
@@ -24,7 +24,7 @@ const RecentChats = () => {
   const { conversationId } = useSelector((state: RootState) => state.chat);
 
   const [recentChats, setRecentChats] = useState<MenuItemType[]>([]);
-  const { isPending, isSuccess, data, error } = useGetRecentChats(
+  const { isPending, isSuccess, data, error, refetch } = useGetRecentChats(
     user?._id as string,
   );
 
@@ -57,7 +57,7 @@ const RecentChats = () => {
                     <Flex vertical>
                       <Paragraph>{chat?.userDetails?.googleName}</Paragraph>
 
-                      <Flex>
+                      <Flex className="recent-chat-latest">
                         {chat?.messageFrom === user?._id && (
                           <Icon
                             className={`read-icon ${!chat?.isRead ? 'text-softblack' : 'text-[#192bc2]'} mr-1`}
@@ -79,7 +79,9 @@ const RecentChats = () => {
           );
 
           Promise.all(userDetailsPromises)
-            .then((recentChats) => setRecentChats(recentChats))
+            .then((recentChats) => {
+              setRecentChats(recentChats);
+            })
             .catch((error) => createToast('error', error.message));
         } else {
           createToast('error', error.message);
@@ -89,40 +91,8 @@ const RecentChats = () => {
   }, [isPending, isSuccess, data, error, user, createToast]);
 
   useEffect(() => {
-    const handleNewMessage = (chatList: IRecentChat[]) => {
-      const userDetailsPromises = chatList?.map(async (chat: IRecentChat) => {
-        return {
-          key: chat?.conversationId,
-          label: (
-            <Flex justify="start" align="center">
-              <Avatar size="large" src={chat?.userDetails?.googlePicture} />
-
-              <Flex vertical>
-                <Paragraph>{chat?.userDetails?.googleName}</Paragraph>
-
-                <Flex>
-                  {chat?.messageFrom === user?._id && (
-                    <Icon
-                      className={`read-icon ${!chat?.isRead ? 'text-softblack' : 'text-[#192bc2]'} mr-1`}
-                      width="20"
-                      height="20"
-                      icon="charm:tick-double"
-                    />
-                  )}
-
-                  <TruncatedText
-                    text={`${chat?.message || 'Sent an attachment'}`}
-                  />
-                </Flex>
-              </Flex>
-            </Flex>
-          ),
-        } as MenuItemType;
-      });
-
-      Promise.all(userDetailsPromises)
-        .then((recentChats) => setRecentChats(recentChats))
-        .catch((error) => createToast('error', error.message));
+    const handleNewMessage = async () => {
+      await refetch();
     };
 
     socket.on('recent-message', handleNewMessage);
@@ -130,7 +100,7 @@ const RecentChats = () => {
     return () => {
       socket.off('recent-message', handleNewMessage);
     };
-  }, [user?._id]);
+  }, [refetch, createToast]);
 
   return (
     <Flex
@@ -139,8 +109,12 @@ const RecentChats = () => {
       align="center"
       vertical
     >
-      {!recentChats.length ? (
+      {isPending ? (
         <Spin size="large" />
+      ) : !recentChats.length ? (
+        <Text className="font-pacifico text-xl text-white text-center mt-3">
+          Search your friends to start chatting
+        </Text>
       ) : (
         <Menu
           mode="vertical"

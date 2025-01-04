@@ -19,6 +19,8 @@ export type IChat = {
   isRead: boolean;
   isEdited: boolean;
   isDeleted: boolean;
+  reaction: string;
+  replyMessageId: IChat;
 };
 
 export type ICreateChatResponse = IApiResponse & {
@@ -35,9 +37,17 @@ export type IRecentChatResponse = IApiResponse & {
 
 export type IGetChatResponse = IApiResponse & {
   chats: IChat[];
-  totalPages: number;
 };
 
 export type ISearchChatResponse = IApiResponse & {
   chats: IChat[];
+};
+
+export type IConversationResponse = IApiResponse & {
+  conversationId: string;
+};
+
+export type IAddReactionRequest = {
+  chatId: string;
+  reaction: string;
 };

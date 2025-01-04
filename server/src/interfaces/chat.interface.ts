@@ -15,6 +15,8 @@ export interface IChatDocument extends Document {
   isRead?: boolean;
   isEdited?: boolean;
   isDeleted?: boolean;
+  reaction?: string;
+  replyMessageId: string | ObjectId;
 }
 
 export interface IRecentChat extends IChatDocument {

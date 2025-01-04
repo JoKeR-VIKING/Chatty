@@ -1,12 +1,14 @@
 import { AxiosResponse } from 'axios';
 
 import axios from '@utils/axios';
+import { IApiResponse } from '@src/interfaces';
 import {
   ICreateChatRequest,
   ICreateChatResponse,
   IRecentChatResponse,
   IGetChatResponse,
   ISearchChatResponse,
+  IConversationResponse,
 } from '@interfaces/chat.interface';
 
 export const sendMessageApi = (
@@ -35,9 +37,8 @@ export const getRecentChats = (
 export const getChats = (
   signal: AbortSignal,
   conversationId: string,
-  pageNumber: number,
 ): Promise<AxiosResponse<IGetChatResponse>> => {
-  return axios.get(`chat/conversation/${conversationId}/${pageNumber}`, {
+  return axios.get(`chat/conversation/${conversationId}`, {
     signal,
   });
 };
@@ -51,4 +52,21 @@ export const getSearchChats = (
     `chat/search-chat-message/${conversationId}/${searchChatPrefix}`,
     { signal },
   );
+};
+
+export const getConversationId = (
+  signal: AbortSignal,
+  messageFrom: string,
+  messageTo: string,
+): Promise<AxiosResponse<IConversationResponse>> => {
+  return axios.get(`/chat/get-conversation/${messageFrom}/${messageTo}`, {
+    signal,
+  });
+};
+
+export const addReaction = (
+  chatId: string,
+  reaction: string,
+): Promise<AxiosResponse<IApiResponse>> => {
+  return axios.post('/chat/create/reaction', { chatId, reaction });
 };

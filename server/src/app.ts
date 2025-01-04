@@ -56,13 +56,14 @@ class App {
         cookie: {
           httpOnly: true,
           secure: false,
-          maxAge: 1000 * 60 * 60 * 24,
+          maxAge: 1000 * 60 * 60 * 24 * 3,
           sameSite: 'lax',
         },
       }),
     );
     this.app.use(cookieParser());
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.json({ limit: '20mb' }));
+    this.app.use(bodyParser.urlencoded({ extended: true }));
     this.app.use(
       cors({
         origin: Config.CLIENT_URL,

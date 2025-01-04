@@ -22,15 +22,13 @@
         }
 
         .ant-typography {
-          @apply m-0;
+          @apply m-0 mb-1 font-semibold text-base;
         }
 
-        .ant-typography:nth-child(1) {
-          @apply mb-1 font-semibold text-base;
-        }
-
-        .ant-typography:nth-child(2) {
-          @apply mb-2 font-light text-sm;
+        .recent-chat-latest {
+          .ant-typography {
+            @apply mb-2 font-light text-sm;
+          }
         }
       }
 

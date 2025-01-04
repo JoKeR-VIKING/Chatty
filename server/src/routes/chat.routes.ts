@@ -18,6 +18,11 @@ export default () => {
     upload.single('attachmentData'),
     ChatController.prototype.createMessageWithAttachment,
   );
+  router.post(
+    '/chat/create/reaction',
+    isAuthenticated,
+    ChatController.prototype.addReaction,
+  );
 
   router.get(
     '/chat/recent-chats/:messageFrom',
@@ -25,14 +30,19 @@ export default () => {
     ChatController.prototype.getRecentChatList,
   );
   router.get(
-    '/chat/conversation/:conversationId/:pageNumber',
-    // isAuthenticated,
+    '/chat/conversation/:conversationId',
+    isAuthenticated,
     ChatController.prototype.getChats,
   );
   router.get(
     '/chat/search-chat-message/:conversationId/:searchChatPrefix',
     isAuthenticated,
     ChatController.prototype.searchChats,
+  );
+  router.get(
+    '/chat/get-conversation/:messageFrom/:messageTo',
+    isAuthenticated,
+    ChatController.prototype.getConversationId,
   );
 
   return router;

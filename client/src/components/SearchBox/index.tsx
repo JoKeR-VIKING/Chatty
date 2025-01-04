@@ -58,7 +58,7 @@ const SearchBox: React.FC = () => {
   }, []);
 
   return (
-    <Flex className="w-full" ref={searchListRef} justify="center">
+    <Flex className="search-box-main" ref={searchListRef} justify="center">
       <Tooltip
         className="friends-tooltip"
         overlayInnerStyle={{ boxShadow: 'none' }}
@@ -66,7 +66,11 @@ const SearchBox: React.FC = () => {
           (isPending || isTyping) && searchPrefix.length > 3 ? (
             <Spin size="default" />
           ) : (
-            <SearchResults results={searchResults} />
+            <SearchResults
+              results={searchResults}
+              setSearchListOpen={setSearchListOpen}
+              searchPrefix={searchPrefix}
+            />
           )
         }
         open={searchListOpen}

@@ -14,6 +14,13 @@ const chatSchema: Schema = new Schema(
     isRead: { type: Boolean, required: false, default: false },
     isEdited: { type: Boolean, required: false, default: false },
     isDeleted: { type: Boolean, required: false, default: false },
+    reaction: { type: String, required: false, default: '' },
+    replyMessageId: {
+      type: ObjectId,
+      required: false,
+      default: null,
+      ref: 'Chat',
+    },
   },
   { timestamps: true },
 );

@@ -31,7 +31,11 @@ class ChatService {
       );
 
     Object.assign(chat, { conversationId: conversation._id });
-    return await ChatModel.create(chat);
+    const createdChat = await ChatModel.create(chat);
+
+    return await ChatModel.findById(createdChat._id)
+      .populate('replyMessageId')
+      .exec();
   }
 
   public async getChatList(id: string | ObjectId) {
@@ -90,24 +94,15 @@ class ChatService {
     ]).exec();
   }
 
-  public async getChats(conversationId: string | ObjectId, pageNumber: number) {
-    const pageLimit = 13;
-    const skipMessages = (pageNumber - 1) * pageLimit;
+  public async getChats(conversationId: string | ObjectId) {
     const query = { conversationId: conversationId };
-
-    const totalPages: number = Math.ceil(
-      (await ChatModel.countDocuments({
-        conversationId,
-      })) / pageLimit,
-    );
 
     const chats = await ChatModel.find(query)
       .sort({ createdAt: -1 })
-      .skip(skipMessages)
-      .limit(pageLimit)
+      .populate('replyMessageId')
       .exec();
 
-    return [chats.reverse(), totalPages];
+    return chats.reverse();
   }
 
   public async searchChats(conversationId: string, searchPrefix: string) {
@@ -119,6 +114,45 @@ class ChatService {
     };
 
     return await ChatModel.find(query).exec();
+  }
+
+  public async getConversationId(
+    messageFrom: string | ObjectId,
+    messageTo: string | ObjectId,
+  ) {
+    const query = {
+      $or: [
+        {
+          messageFrom: messageFrom,
+          messageTo: messageTo,
+        },
+        {
+          messageFrom: messageTo,
+          messageTo: messageFrom,
+        },
+      ],
+    };
+
+    return await ConversationModel.findOneAndUpdate(
+      query,
+      {
+        $setOnInsert: {
+          messageFrom: messageFrom,
+          messageTo: messageTo,
+        },
+      },
+      { new: true, upsert: true },
+    ).exec();
+  }
+
+  public async addReaction(chatId: string | ObjectId, reaction: string) {
+    const query = { _id: new ObjectId(chatId) };
+
+    return (await ChatModel.findOneAndUpdate(
+      query,
+      { $set: { reaction: reaction } },
+      { new: true },
+    ).exec()) as IChatDocument;
   }
 }
 

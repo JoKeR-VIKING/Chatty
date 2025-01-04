@@ -1,3 +1,5 @@
+import { MutableRefObject } from 'react';
+
 export const getFileIconName = (fileName: string): string => {
   const extension = fileName.split('.').pop()?.toLowerCase();
 
@@ -52,4 +54,13 @@ export const formatDateToTime = (dateStr: string) => {
     minute: '2-digit',
     hour12: undefined,
   });
+};
+
+export const scrollToMessage = (
+  messagesRef: MutableRefObject<Map<string, HTMLElement>>,
+  id: string,
+) => {
+  const messageNode = messagesRef.current.get(id);
+  if (messageNode)
+    messageNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };

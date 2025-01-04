@@ -5,6 +5,7 @@ import mime from 'mime-types';
 
 import chatService from '@services/chat.service';
 import { IChatDocument, IRecentChat } from '@interfaces/chat.interface';
+import { IConversationDocument } from '@interfaces/conversation.interface';
 import { chatSocketObject } from '@sockets/chat.socket';
 
 class ChatController {
@@ -13,13 +14,14 @@ class ChatController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { messageFrom, messageTo, message } = req.body;
+    const { messageFrom, messageTo, message, replyMessageId } = req.body;
 
     try {
       const chat = await chatService.createMessage({
         messageFrom: messageFrom,
         messageTo: messageTo,
         message: message,
+        replyMessageId: replyMessageId,
       } as IChatDocument);
 
       chatSocketObject.to(messageFrom).emit('new-message', chat);
@@ -51,7 +53,7 @@ class ChatController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { messageFrom, messageTo, attachmentName } = req.body;
+    const { messageFrom, messageTo, attachmentName, replyMessageId } = req.body;
     const attachmentData = req.file?.buffer;
     let mimeType = mime.lookup(attachmentName) || 'application/octet-stream';
 
@@ -78,6 +80,7 @@ class ChatController {
         messageTo: messageTo,
         attachmentName: attachmentName,
         attachmentData: base64Attachment,
+        replyMessageId: replyMessageId,
       } as IChatDocument);
 
       chatSocketObject.to(messageFrom).emit('new-message', chat);
@@ -132,18 +135,14 @@ class ChatController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { conversationId, pageNumber } = req.params;
+    const { conversationId } = req.params;
 
     try {
-      const [chats, totalPages] = await chatService.getChats(
-        conversationId,
-        parseInt(pageNumber),
-      );
+      const chats = await chatService.getChats(conversationId);
 
       res.status(StatusCodes.OK).json({
         message: 'Successfully fetched chats',
         chats: chats,
-        totalPages: totalPages,
       });
     } catch (err) {
       res
@@ -173,6 +172,58 @@ class ChatController {
     } catch (err) {
       res.status(StatusCodes.BAD_REQUEST).json({
         message: `Error getting chats for search prefix ${searchChatPrefix}`,
+      });
+      next(err);
+    }
+  }
+
+  public async getConversationId(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const { messageFrom, messageTo } = req.params;
+
+    try {
+      const conversation: IConversationDocument =
+        await chatService.getConversationId(messageFrom, messageTo);
+
+      res.status(StatusCodes.OK).json({
+        message: 'Successfully fetched conversation id',
+        conversationId: conversation._id,
+      });
+    } catch (err) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: `Error getting conversation id`,
+      });
+      next(err);
+    }
+  }
+
+  public async addReaction(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const { chatId, reaction } = req.body;
+
+    try {
+      const chat: IChatDocument = await chatService.addReaction(
+        chatId,
+        reaction,
+      );
+
+      chatSocketObject
+        .to(chat.messageFrom.toString())
+        .emit('new-reaction', chat);
+      chatSocketObject.to(chat.messageTo.toString()).emit('new-reaction', chat);
+
+      res.status(StatusCodes.OK).json({
+        message: 'Successfully added reaction',
+      });
+    } catch (err) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: 'Error adding reaction',
       });
       next(err);
     }

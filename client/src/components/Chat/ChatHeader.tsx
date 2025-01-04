@@ -17,6 +17,7 @@ import { Icon } from '@iconify/react';
 import { IChat } from '@interfaces/chat.interface';
 import { AppDispatch, RootState } from '@src/store';
 import { removeSelectedChat, setSearchChatPrefix } from '@store/chat.slice';
+import { scrollToMessage } from '@utils/helpers';
 
 const { Header } = Layout;
 const { Paragraph } = Typography;
@@ -50,20 +51,16 @@ const ChatHeader: React.FC<Props> = (props) => {
     },
   ];
 
-  const scrollToMessage = (id: string) => {
-    const messageNode = messagesRef.current.get(id);
-    if (messageNode)
-      messageNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
   const handleSearch = debounce(async (searchPrefix: string) => {
     dispatch(setSearchChatPrefix(searchPrefix));
   }, 500);
 
   useEffect(() => {
-    setSearchIndex(searchChats.length - 2);
-    scrollToMessage(searchChats[searchChats.length - 1]?._id);
-  }, [searchChats]);
+    (async () => {
+      scrollToMessage(messagesRef, searchChats[searchChats.length - 1]?._id);
+      setSearchIndex(searchChats.length - 1);
+    })();
+  }, [searchChats, messagesRef]);
 
   if (!selectedChatUser) {
     return <></>;
@@ -102,19 +99,23 @@ const ChatHeader: React.FC<Props> = (props) => {
         <Button
           className="glass-btn p-5 ml-3 mr-1 border border-solid border-offwhite rounded-full"
           icon={<Icon color="darkcyan" icon={'fe:arrow-up'} />}
-          disabled={searchIndex < 0}
-          onClick={() => {
-            setSearchIndex(searchIndex - 1);
-            scrollToMessage(searchChats[searchIndex]?._id);
+          disabled={searchIndex <= 0}
+          onClick={async () => {
+            const newIndex = searchIndex - 1;
+
+            scrollToMessage(messagesRef, searchChats[newIndex]?._id);
+            setSearchIndex(newIndex);
           }}
         />
         <Button
           className="glass-btn p-5 ml-1 mr-3 border border-solid border-offwhite rounded-full"
           icon={<Icon color="darkcyan" icon={'fe:arrow-down'} />}
-          disabled={searchIndex < -1 || searchIndex >= searchChats.length - 1}
-          onClick={() => {
-            setSearchIndex(searchIndex + 1);
-            scrollToMessage(searchChats[searchIndex]?._id);
+          disabled={searchIndex < 0 || searchIndex >= searchChats.length - 1}
+          onClick={async () => {
+            const newIndex = searchIndex + 1;
+
+            scrollToMessage(messagesRef, searchChats[newIndex]?._id);
+            setSearchIndex(newIndex);
           }}
         />
       </Flex>

@@ -6,16 +6,14 @@ import React, {
   SetStateAction,
   MutableRefObject,
 } from 'react';
-import { useSelector } from 'react-redux';
-import mime from 'mime-types';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { Layout, Flex, Typography, Image } from 'antd';
+import { Layout, Flex, Typography, Image, Spin, Button } from 'antd';
 import { Icon } from '@iconify/react';
 
 import { IChat } from '@interfaces/chat.interface';
-import AudioPlayer from '@components/AudioPlayer';
-import ChatText from '@components/Chat/ChatText';
-import { RootState } from '@src/store';
+import ChatMessageBox from '@components/Chat/ChatMessageBox';
+import { AppDispatch, RootState } from '@src/store';
 import { useGetChats, useSearchChats } from '@hooks/chat.hooks';
 import { useToast } from '@hooks/toast.hooks';
 import { formatDateToTime } from '@utils/helpers';
@@ -33,6 +31,7 @@ type Props = {
 const ChatContent: React.FC<Props> = (props) => {
   const { setSearchChats, messagesRef } = props;
 
+  const dispatch: AppDispatch = useDispatch();
   const { createToast } = useToast();
   const { user } = useSelector((state: RootState) => state.user);
   const { conversationId, searchChatPrefix } = useSelector(
@@ -41,15 +40,10 @@ const ChatContent: React.FC<Props> = (props) => {
 
   const [chats, setChats] = useState<IChat[]>([]);
   const [initial, setInitial] = useState(true);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [isSwitchingChat, setIsSwitchingChat] = useState(false);
+  const [isScrolledAtBottom, setIsScrolledAtBottom] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const { isPending, isSuccess, data, error } = useGetChats(
-    conversationId,
-    pageNumber,
-  );
+  const { isPending, isSuccess, data, error } = useGetChats(conversationId);
   const {
     isPending: searchChatPending,
     isSuccess: searchChatSuccess,
@@ -62,31 +56,27 @@ const ChatContent: React.FC<Props> = (props) => {
     else messagesRef.current.delete(id);
   };
 
+  const isAtBottom = () => {
+    if (!contentRef.current) return true;
+
+    const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
+    const isAtBottom = scrollHeight - (scrollTop + clientHeight) <= 200;
+
+    return isAtBottom;
+  };
+
   useEffect(() => {
     setChats([]);
-    setPageNumber(1);
     setInitial(true);
-    setIsSwitchingChat(true);
-  }, [conversationId]);
+  }, [conversationId, dispatch]);
 
   useEffect(() => {
     if (!isPending && isSuccess) {
-      setTotalPages(data?.data?.totalPages);
-      setChats((prevState: IChat[]) => {
-        if (isSwitchingChat) {
-          setIsSwitchingChat(false);
-          return data.data.chats;
-        }
-
-        const newMessages = data.data.chats.filter(
-          (newChat) => !prevState.some((chat) => chat._id === newChat._id),
-        );
-        return [...newMessages, ...prevState];
-      });
+      setChats(data.data.chats);
     } else if (error) {
       createToast('error', error.message);
     }
-  }, [isPending, isSuccess, data, error, isSwitchingChat, createToast]);
+  }, [isPending, isSuccess, data, error, createToast, messagesRef]);
 
   useEffect(() => {
     if (!searchChatPending && searchChatSuccess) {
@@ -123,16 +113,47 @@ const ChatContent: React.FC<Props> = (props) => {
   }, [conversationId]);
 
   useEffect(() => {
+    const handleNewReaction = (updatedChat: IChat) => {
+      setChats((prevState) => {
+        return prevState.map((chat) => {
+          if (chat._id === updatedChat?._id)
+            return { ...chat, reaction: updatedChat?.reaction };
+
+          return chat;
+        });
+      });
+    };
+
+    socket.on('new-reaction', handleNewReaction);
+
+    return () => {
+      socket.off('new-reaction', handleNewReaction);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolledAtBottom(isAtBottom());
+    };
+
+    const content = contentRef.current;
+    content?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      content?.removeEventListener('scroll', handleScroll);
+    };
+  }, [isPending]);
+
+  useEffect(() => {
     const scrollToBottom = () => {
       if (!chats.length || !contentRef.current) return;
 
-      const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-      const isAtBottom = scrollHeight - (scrollTop + clientHeight) <= 80;
+      const { scrollHeight } = contentRef.current;
 
-      if (initial) {
+      if (initial && !isPending) {
         contentRef.current.scrollTop = scrollHeight;
         setInitial(false);
-      } else if (isAtBottom) {
+      } else if (isAtBottom() && !isPending) {
         contentRef.current.scrollTo({
           top: scrollHeight,
           behavior: 'smooth',
@@ -140,27 +161,8 @@ const ChatContent: React.FC<Props> = (props) => {
       }
     };
 
-    setTimeout(scrollToBottom, 0);
-  }, [chats, initial]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!contentRef.current || isPending) return;
-
-      const { scrollTop } = contentRef.current;
-      if (scrollTop < 100)
-        setPageNumber((prevState) => {
-          if (prevState === totalPages) return prevState;
-
-          return prevState + 1;
-        });
-    };
-
-    const container = contentRef.current;
-    container?.addEventListener('scroll', handleScroll);
-
-    return () => container?.removeEventListener('scroll', handleScroll);
-  }, [totalPages, chats.length, isPending]);
+    scrollToBottom();
+  }, [chats, initial, isPending, messagesRef]);
 
   if (!conversationId) {
     return (
@@ -173,9 +175,19 @@ const ChatContent: React.FC<Props> = (props) => {
     );
   }
 
+  if (isPending) {
+    return (
+      <Content className="chat-content relative" ref={contentRef}>
+        <Flex className="chat-message-main" vertical justify="center">
+          <Spin size="large" />
+        </Flex>
+      </Content>
+    );
+  }
+
   return (
-    <Content className="chat-content" ref={contentRef}>
-      <Flex className="chat-message-main" vertical justify="flex-end">
+    <Content className={`chat-content relative`} ref={contentRef}>
+      <Flex className="chat-message-main relative" vertical justify="flex-end">
         {chats?.map((chat: IChat) => (
           <Flex
             ref={(node) => setMessageRef(chat?._id, node)}
@@ -183,47 +195,12 @@ const ChatContent: React.FC<Props> = (props) => {
             className={`${chat?.messageFrom === user?._id ? 'items-end' : ''}`}
             vertical
           >
-            <Flex
-              className={`chat-message-box ${
-                chat?.message &&
-                (chat?.messageFrom === user?._id ? 'chat-your' : 'chat-them')
-              }`}
-              align="flex-end"
-            >
-              {chat?.message ? (
-                <ChatText
-                  messageFrom={chat?.messageFrom}
-                  message={chat?.message}
-                  searchTerm={searchChatPrefix}
-                />
-              ) : (
-                <>
-                  {(
-                    mime.lookup(chat?.attachmentName) ||
-                    'application/octet-stream'
-                  ).startsWith('image/') ? (
-                    <Image
-                      className="chat-image"
-                      src={chat?.attachmentData}
-                      width={400}
-                    />
-                  ) : (
-                    <AudioPlayer src={chat?.attachmentData} />
-                  )}
-                </>
-              )}
+            <ChatMessageBox
+              chat={chat}
+              searchChatPrefix={searchChatPrefix}
+              messagesRef={messagesRef}
+            />
 
-              {chat?.messageFrom === user?._id && (
-                <Icon
-                  className={`read-icon ${
-                    !chat?.isRead ? 'text-softblack' : 'text-[#19c5ff]'
-                  }`}
-                  width="20"
-                  height="20"
-                  icon="charm:tick-double"
-                />
-              )}
-            </Flex>
             <Flex align="center">
               <Text
                 className={`chat-time ${
@@ -235,6 +212,22 @@ const ChatContent: React.FC<Props> = (props) => {
             </Flex>
           </Flex>
         ))}
+
+        <Button
+          className={`scroll-to-bottom-btn ${!isScrolledAtBottom ? 'btn-visible' : 'btn-hidden'}`}
+          type="primary"
+          icon={
+            <Icon icon="material-symbols:keyboard-double-arrow-down-rounded" />
+          }
+          onClick={() => {
+            if (contentRef.current) {
+              contentRef.current.scrollTo({
+                top: contentRef.current.scrollHeight,
+                behavior: 'smooth',
+              });
+            }
+          }}
+        />
       </Flex>
     </Content>
   );

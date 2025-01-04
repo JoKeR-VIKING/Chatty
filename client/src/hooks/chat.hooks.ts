@@ -8,6 +8,8 @@ import {
   IRecentChatResponse,
   IGetChatResponse,
   ISearchChatResponse,
+  IConversationResponse,
+  IAddReactionRequest,
 } from '@interfaces/chat.interface';
 import {
   sendMessageApi,
@@ -15,11 +17,17 @@ import {
   getRecentChats,
   getChats,
   getSearchChats,
+  getConversationId,
+  addReaction,
 } from '@api/chat.api';
 
 type CreateChatProps = {
   onSuccess: (chat: AxiosResponse<ICreateChatResponse>) => void;
   onError: (chat: AxiosError<IApiResponse>) => void;
+};
+
+type AddReactionProps = {
+  onError: (result: AxiosError<IApiResponse>) => void;
 };
 
 export const useSendMessage = ({ onSuccess, onError }: CreateChatProps) => {
@@ -64,14 +72,14 @@ export const useGetRecentChats = (messageFrom: string) => {
   });
 };
 
-export const useGetChats = (conversationId: string, pageNumber: number) => {
+export const useGetChats = (conversationId: string) => {
   return useQuery<AxiosResponse<IGetChatResponse>>({
-    queryKey: ['chat', conversationId, pageNumber],
-    queryFn: ({ signal }) => getChats(signal, conversationId, pageNumber),
+    queryKey: ['chat', conversationId],
+    queryFn: ({ signal }) => getChats(signal, conversationId),
     retry: false,
     staleTime: 0,
     refetchOnWindowFocus: false,
-    enabled: Boolean(conversationId && pageNumber),
+    enabled: !!conversationId,
   });
 };
 
@@ -105,4 +113,31 @@ export const useSearchChats = (
       enabled: !!searchPrefix,
     },
   );
+};
+
+export const useGetConversation = (messageFrom: string, messageTo: string) => {
+  return useQuery<
+    AxiosResponse<IConversationResponse>,
+    AxiosError<IApiResponse>
+  >({
+    queryKey: ['conversation', messageFrom, messageTo],
+    queryFn: ({ signal }) => getConversationId(signal, messageFrom, messageTo),
+    retry: false,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    enabled: Boolean(messageFrom && messageTo),
+  });
+};
+
+export const useAddReaction = ({ onError }: AddReactionProps) => {
+  return useMutation<
+    AxiosResponse<IApiResponse>,
+    AxiosError<IApiResponse>,
+    IAddReactionRequest
+  >({
+    mutationKey: ['add-reaction'],
+    mutationFn: ({ chatId, reaction }) => addReaction(chatId, reaction),
+    onError: (err) => onError(err),
+    retry: false,
+  });
 };

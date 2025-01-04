@@ -34,8 +34,39 @@
   .search-box button {
     @apply bg-white/10 rounded-lg border border-solid border-[darkcyan] text-white hidden;
   }
+  .search-box-main {
+    @apply w-full;
+  }
+  .search-box-main .ant-tooltip {
+    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
+  }
   .sidebar-search {
     @apply w-[90%] rounded-3xl mt-5;
+  }
+  .ant-tooltip-inner:has(.reaction-bar) {
+    @apply rounded-3xl;
+  }
+  .reaction-bar button {
+    @apply mx-1;
+  }
+  .reaction-bar button:hover {
+    @apply scale-125;
+  }
+  .reaction-bar .selected-reaction {
+    @apply bg-white/10 rounded-full;
+  }
+  .reaction-box {
+    @apply absolute -bottom-2.5 rounded-full bg-transparent p-[0.2rem];
+  }
+  .scroll-to-bottom-btn {
+    @apply sticky z-50 left-1/2 bottom-2 -translate-x-1/2 bg-softblack text-white rounded-full invisible -translate-y-10;
+    transition: visibility 0.3s, transform 0.3s ease;
+  }
+  .scroll-to-bottom-btn.btn-visible {
+    @apply visible translate-y-0;
+  }
+  .scroll-to-bottom-btn.btn-hidden {
+    @apply invisible -translate-y-10;
   }
 }
 @layer components {
@@ -80,56 +111,95 @@
     @apply bg-primary;
   }
   .chat-content {
-    @apply bg-white/10 min-h-[80vh] max-h-[80vh] overflow-auto;
+    @apply bg-white/10 min-h-[70vh] max-h-[80vh] overflow-auto;
     scrollbar-width: none;
     scrollbar-gutter: stable;
   }
   .chat-content .chat-message-main {
     @apply w-full min-h-[80vh] p-3;
   }
-  .chat-content .chat-message-main .chat-message-box {
-    @apply w-max max-w-[60%] rounded-lg relative;
+  .chat-content .chat-message-main .items-end {
+    @apply mb-2.5;
   }
-  .chat-content .chat-message-main .chat-message-box .chat-message {
-    @apply font-chivo font-extralight text-white p-3 m-0 text-justify relative;
+  .chat-content .chat-message-main .chat-reply-box {
+    @apply w-max max-w-[60%] bg-primary-dark rounded-2xl;
   }
-  .chat-content .chat-message-main .chat-message-box .chat-image {
+  .chat-content .chat-message-main .chat-reply-box .message-reply-main {
+    @apply p-3 mx-2 relative;
+  }
+  .chat-content .chat-message-main .chat-reply-box .message-reply-main .ant-typography {
+    @apply text-white m-0;
+  }
+  .chat-content .chat-message-main .chat-reply-box .message-reply-main .message-reply-text {
+    @apply text-white font-chivo font-medium mb-1;
+  }
+  .chat-content .chat-message-main .chat-reply-box .message-reply-main .message-reply-close-btn {
+    @apply absolute bg-softblack rounded-full -top-3 -right-4;
+  }
+  .chat-content .chat-message-main .chat-reply-box .message-reply-main .message-reply-close-btn:hover {
+    @apply bg-softblack rounded-full scale-110;
+  }
+  .chat-content .chat-message-main .chat-reply-box .chat-message-box {
+    @apply w-full rounded-lg relative;
+  }
+  .chat-content .chat-message-main .chat-reply-box .chat-message-box .chat-message {
+    @apply font-chivo font-extralight text-white p-3 pt-0 m-0 text-justify relative;
+  }
+  .chat-content .chat-message-main .chat-reply-box .chat-message-box .chat-image {
     @apply rounded-lg;
   }
-  .chat-content .chat-message-main .chat-message-box .chat-image + .ant-image-mask {
+  .chat-content .chat-message-main .chat-reply-box .chat-message-box .chat-image + .ant-image-mask {
     @apply rounded-lg;
   }
-  .chat-content .chat-message-main .chat-message-box .read-icon {
+  .chat-content .chat-message-main .chat-reply-box .chat-message-box .read-icon {
     @apply absolute bottom-2 right-2;
   }
-  .chat-content .chat-message-main .chat-time {
-    @apply font-nunito font-light text-[0.65rem] mt-0.5 text-primary-dark;
+  .chat-content .chat-message-main .chat-reply-box .chat-time {
+    @apply font-nunito font-light text-[0.65rem] mt-1 text-primary-dark;
   }
-  .chat-content .chat-message-main .chat-your {
+  .chat-content .chat-message-main .chat-reply-box .chat-your {
     @apply bg-primary;
   }
-  .chat-content .chat-message-main .chat-your::after {
+  .chat-content .chat-message-main .chat-reply-box .chat-your::after {
     @apply absolute -bottom-1.5 right-0 w-0 h-0 border-8 border-solid border-primary border-l-transparent border-b-transparent;
     content: "";
   }
-  .chat-content .chat-message-main .chat-them {
+  .chat-content .chat-message-main .chat-reply-box .chat-them {
     @apply bg-softblack;
   }
-  .chat-content .chat-message-main .chat-them::after {
+  .chat-content .chat-message-main .chat-reply-box .chat-them::after {
     @apply absolute -bottom-1.5 left-0 w-0 h-0 border-8 border-solid border-softblack border-r-transparent border-b-transparent;
     content: "";
   }
   .chat-footer {
     @apply w-full flex justify-start items-center px-4 pt-2 pb-5 bg-white/20 shadow-lg rounded-b-lg;
   }
-  .message-box {
-    @apply rounded-2xl font-chivo font-light text-[1rem] border-none ml-5 mr-5 pt-2.5 pb-2.5;
+  .message-box-main, .attachment-box-main {
+    @apply w-full ml-5 mr-5 rounded-2xl bg-primary-dark;
   }
-  .message-box:focus {
+  .message-box-main .message-reply-main, .attachment-box-main .message-reply-main {
+    @apply p-3 mx-2 relative;
+  }
+  .message-box-main .message-reply-main .ant-typography, .attachment-box-main .message-reply-main .ant-typography {
+    @apply text-white m-0;
+  }
+  .message-box-main .message-reply-main .message-reply-text, .attachment-box-main .message-reply-main .message-reply-text {
+    @apply text-white font-chivo font-medium mb-1;
+  }
+  .message-box-main .message-reply-main .message-reply-close-btn, .attachment-box-main .message-reply-main .message-reply-close-btn {
+    @apply absolute bg-softblack rounded-full -top-3 -right-4;
+  }
+  .message-box-main .message-reply-main .message-reply-close-btn:hover, .attachment-box-main .message-reply-main .message-reply-close-btn:hover {
+    @apply bg-softblack rounded-full scale-110;
+  }
+  .message-box-main .message-box, .attachment-box-main .message-box {
+    @apply rounded-2xl font-chivo font-light text-[1rem] border-none pt-2.5 pb-2.5;
+  }
+  .message-box-main .message-box:focus, .attachment-box-main .message-box:focus {
     @apply shadow-sm shadow-[darkcyan];
   }
-  .attachment-box {
-    @apply w-full rounded-2xl bg-[darkcyan] ml-5 mr-5 pl-2 pt-2.5 pb-2.5;
+  .message-box-main .attachment-box, .attachment-box-main .attachment-box {
+    @apply w-full rounded-2xl bg-[darkcyan] pl-2 pt-2.5 pb-2.5;
   }
 }
 .icon-btn {
@@ -258,12 +328,9 @@
     @apply w-11 h-11 mr-4;
   }
   .recent-chats .ant-menu .ant-menu-item .ant-typography {
-    @apply m-0;
+    @apply m-0 mb-1 font-semibold text-base;
   }
-  .recent-chats .ant-menu .ant-menu-item .ant-typography:nth-child(1) {
-    @apply mb-1 font-semibold text-base;
-  }
-  .recent-chats .ant-menu .ant-menu-item .ant-typography:nth-child(2) {
+  .recent-chats .ant-menu .ant-menu-item .recent-chat-latest .ant-typography {
     @apply mb-2 font-light text-sm;
   }
   .recent-chats .ant-menu .ant-menu-item-selected .ant-typography {
