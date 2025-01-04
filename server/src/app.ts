@@ -36,6 +36,7 @@ class App {
   }
 
   public applyMiddleware = () => {
+    this.app.set('trust proxy', true);
     this.app.use(
       session({
         secret: Config.CLIENT_SECRET!,
@@ -55,9 +56,9 @@ class App {
         }),
         cookie: {
           httpOnly: true,
-          secure: false,
+          secure: Config.NODE_ENV === 'production',
           maxAge: 1000 * 60 * 60 * 24 * 3,
-          sameSite: 'lax',
+          sameSite: Config.NODE_ENV === 'production' ? 'none' : 'lax',
         },
       }),
     );
