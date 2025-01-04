@@ -33,7 +33,7 @@
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@interfaces/*": ["./src/interfaces/*"],
-      "@public/*": ["./src/public/*"],
+      "@public/*": ["./public/images/*"],
       "@theme/*": ["./src/theme/*"],
       "@styles/*": ["./src/styles/*"],
       "@sockets/*": ["./src/sockets/*"],

@@ -397,7 +397,7 @@ body {
 }
 
 .hero-bg {
-  background-image: linear-gradient(to right bottom, rgba(77, 159, 159, 0.85), rgba(77, 159, 159, 0.85)), url(../public/Chat.png);
+  background-image: linear-gradient(to right bottom, rgba(77, 159, 159, 0.85), rgba(77, 159, 159, 0.85)), url(/images/Chat.png);
   background-size: cover;
   background-position: center;
 }
