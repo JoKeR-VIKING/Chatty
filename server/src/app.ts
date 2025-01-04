@@ -36,7 +36,6 @@ class App {
   }
 
   public applyMiddleware = () => {
-    this.app.set('trust proxy', true);
     this.app.use(
       session({
         secret: Config.CLIENT_SECRET!,
@@ -62,6 +61,7 @@ class App {
         },
       }),
     );
+    this.app.set('trust proxy', 1);
     this.app.use(cookieParser());
     this.app.use(bodyParser.json({ limit: '20mb' }));
     this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -72,6 +72,8 @@ class App {
         credentials: true,
       }),
     );
+
+
   };
 
   public applicationRoutes = () => {
