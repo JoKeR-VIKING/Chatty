@@ -42,3 +42,13 @@ export const getUserDetailsApi = (
 ): Promise<AxiosResponse<IUserResponse>> => {
   return axios.get<IUserResponse>(`user/get-user-details-id/${id}`);
 };
+
+export const updateUserDetailsApi = (
+  profileName: string,
+  profileImage: string,
+): Promise<AxiosResponse<IUserResponse>> => {
+  return axios.put<IUserResponse>('user/update-profile', {
+    profileName,
+    profileImage,
+  });
+};

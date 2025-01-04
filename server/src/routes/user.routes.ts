@@ -7,6 +7,11 @@ export default () => {
   const router: Router = express.Router();
 
   router.post('/user/login', UserController.prototype.login);
+  router.put(
+    '/user/update-profile',
+    isAuthenticated,
+    UserController.prototype.updateProfile,
+  );
 
   router.get(
     '/user/get-user-status',

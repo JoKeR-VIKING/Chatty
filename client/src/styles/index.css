@@ -68,6 +68,21 @@
   .scroll-to-bottom-btn.btn-hidden {
     @apply invisible -translate-y-10;
   }
+  .profile-box {
+    @apply h-[20vh];
+  }
+  .profile-box .profile-box-image {
+    @apply w-full rounded-full;
+  }
+  .profile-box .profile-box-name {
+    @apply font-chivo font-normal shadow-none;
+  }
+  .profile-box .profile-box-upload-btn {
+    @apply w-full h-full rounded-full flex flex-col justify-center items-center;
+  }
+  .profile-box .profile-box-upload-btn .ant-typography {
+    @apply m-0;
+  }
 }
 @layer components {
   .chat-window {

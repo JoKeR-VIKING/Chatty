@@ -17,6 +17,7 @@ import { Icon } from '@iconify/react';
 import { IChat } from '@interfaces/chat.interface';
 import { AppDispatch, RootState } from '@src/store';
 import { removeSelectedChat, setSearchChatPrefix } from '@store/chat.slice';
+import { useViewProfile } from '@hooks/profile.hooks';
 import { scrollToMessage } from '@utils/helpers';
 import socket from '@src/sockets';
 
@@ -33,17 +34,34 @@ const ChatHeader: React.FC<Props> = (props) => {
   const { searchChats, messagesRef } = props;
 
   const dispatch: AppDispatch = useDispatch();
+  const { setModal } = useViewProfile();
   const { selectedChatUser } = useSelector((state: RootState) => state.chat);
 
   const [searchIndex, setSearchIndex] = useState(-1);
   const [isOnline, setIsOnline] = useState(false);
+
+  const viewProfile = () => {
+    if (selectedChatUser) setModal('View Profile', selectedChatUser);
+  };
 
   const menuItems: MenuProps['items'] = [
     {
       key: '1',
       label: (
         <Button
-          className="glass-btn close-chat-btn"
+          className="glass-btn close-chat-btn w-full"
+          icon={<Icon icon="iconamoon:profile-fill" width={20} height={20} />}
+          onClick={() => viewProfile()}
+        >
+          Profile
+        </Button>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Button
+          className="glass-btn close-chat-btn w-full"
           icon={<Icon icon="majesticons:close-line" width={20} height={20} />}
           onClick={() => dispatch(removeSelectedChat())}
         >

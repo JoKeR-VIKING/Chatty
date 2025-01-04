@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import userService from '@services/user.service';
 import { IUserDocument, IGoogleUser } from '@interfaces/user.interface';
 import { convertUrlToBase64 } from '@utils/helpers';
+import { chatSocketObject } from '@sockets/chat.socket';
 
 class UserController {
   private async getUserDetails(accessToken: string) {
@@ -41,9 +42,9 @@ class UserController {
       req.session.userId = user?._id;
       req.session.user = {
         _id: user?._id,
-        googleEmail: result?.email,
-        googleName: result?.given_name + ' ' + result?.family_name,
-        googlePicture: base64url,
+        googleEmail: user?.googleEmail,
+        googleName: user?.googleName,
+        googlePicture: user?.googlePicture,
       };
 
       res.status(StatusCodes.OK).json({
@@ -127,6 +128,41 @@ class UserController {
       res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: 'Error getting user details.' });
+      next(err);
+    }
+  }
+
+  public async updateProfile(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    const { profileName, profileImage } = req.body;
+
+    try {
+      if (!req.session.user?._id) throw new Error('No user');
+
+      const user = await userService.updateProfile(
+        profileName,
+        profileImage,
+        req.session.user?._id.toString(),
+      );
+
+      req.session.user = user as IUserDocument;
+      req.session.save((err) => {
+        if (err) throw new Error(err);
+      });
+
+      chatSocketObject.emit('update-profile', user);
+
+      res.status(StatusCodes.OK).json({
+        message: 'Successfully updated user profile',
+        user: user,
+      });
+    } catch (err) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: 'Error updating user profile',
+      });
       next(err);
     }
   }

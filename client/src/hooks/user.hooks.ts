@@ -12,6 +12,7 @@ import {
   getUserStatusApi,
   logoutApi,
   searchUsersApi,
+  updateUserDetailsApi,
 } from '@api/user.api';
 
 type UserLoginProps = {
@@ -70,4 +71,17 @@ export const useSearchUsers = (searchPrefix: string) => {
       enabled: !!searchPrefix && searchPrefix.length > 3,
     },
   );
+};
+
+export const useUpdateUserDetails = () => {
+  return useMutation<
+    AxiosResponse<IUserResponse>,
+    AxiosError<IApiResponse>,
+    { profileName: string; profileImage: string }
+  >({
+    mutationKey: ['update-profile'],
+    mutationFn: ({ profileName, profileImage }) =>
+      updateUserDetailsApi(profileName, profileImage),
+    retry: false,
+  });
 };

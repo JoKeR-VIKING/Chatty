@@ -9,8 +9,9 @@ import type { AppProps } from 'next/app';
 import { ConfigProvider, Layout, theme } from 'antd';
 
 import Config from '@utils/config';
-import ToastProvider from '@components/ToastProvider';
 import AuthProvider from '@components/AuthProvider';
+import ToastProvider from '@components/ToastProvider';
+import ProfileProvider from '@components/ProfileProvider';
 import store from '@store/index';
 
 import Logo from '@public/Logo.jpg';
@@ -81,11 +82,13 @@ const App = ({ Component, pageProps }: AppProps) => {
             <QueryClientProvider client={queryClient}>
               <AuthProvider>
                 <ToastProvider>
-                  <Layout className="bg-transparent">
-                    <Content className="h-screen min-h-screen hero-bg">
-                      <Component {...pageProps} />
-                    </Content>
-                  </Layout>
+                  <ProfileProvider>
+                    <Layout className="bg-transparent">
+                      <Content className="h-screen min-h-screen hero-bg">
+                        <Component {...pageProps} />
+                      </Content>
+                    </Layout>
+                  </ProfileProvider>
                 </ToastProvider>
               </AuthProvider>
 
