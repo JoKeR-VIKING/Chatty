@@ -19,6 +19,7 @@ import {
   getSearchChats,
   getConversationId,
   addReaction,
+  readMessage,
 } from '@api/chat.api';
 
 type CreateChatProps = {
@@ -72,10 +73,10 @@ export const useGetRecentChats = (messageFrom: string) => {
   });
 };
 
-export const useGetChats = (conversationId: string) => {
+export const useGetChats = (conversationId: string, currentUserId: string) => {
   return useQuery<AxiosResponse<IGetChatResponse>>({
     queryKey: ['chat', conversationId],
-    queryFn: ({ signal }) => getChats(signal, conversationId),
+    queryFn: ({ signal }) => getChats(signal, conversationId, currentUserId),
     retry: false,
     staleTime: 0,
     refetchOnWindowFocus: false,
@@ -138,6 +139,18 @@ export const useAddReaction = ({ onError }: AddReactionProps) => {
     mutationKey: ['add-reaction'],
     mutationFn: ({ chatId, reaction }) => addReaction(chatId, reaction),
     onError: (err) => onError(err),
+    retry: false,
+  });
+};
+
+export const useReadMessage = () => {
+  return useMutation<
+    AxiosResponse<IApiResponse>,
+    AxiosError<IApiResponse>,
+    string
+  >({
+    mutationKey: ['add-reaction'],
+    mutationFn: (chatId) => readMessage(chatId),
     retry: false,
   });
 };

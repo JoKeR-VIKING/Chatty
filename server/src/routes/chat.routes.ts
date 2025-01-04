@@ -23,6 +23,11 @@ export default () => {
     isAuthenticated,
     ChatController.prototype.addReaction,
   );
+  router.post(
+    '/chat/read-chat-message',
+    isAuthenticated,
+    ChatController.prototype.readChat,
+  );
 
   router.get(
     '/chat/recent-chats/:messageFrom',
@@ -30,7 +35,7 @@ export default () => {
     ChatController.prototype.getRecentChatList,
   );
   router.get(
-    '/chat/conversation/:conversationId',
+    '/chat/conversation/:conversationId/:currentUserId',
     isAuthenticated,
     ChatController.prototype.getChats,
   );

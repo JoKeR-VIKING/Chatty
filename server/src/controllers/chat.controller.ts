@@ -135,10 +135,22 @@ class ChatController {
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    const { conversationId } = req.params;
+    const { conversationId, currentUserId } = req.params;
 
     try {
-      const chats = await chatService.getChats(conversationId);
+      const chats = await chatService.getChats(conversationId, currentUserId);
+
+      if (chats.length) {
+        if (currentUserId !== chats?.[0]?.messageFrom.toString()) {
+          chatSocketObject
+            .to(chats?.[0]?.messageFrom.toString())
+            .emit('updated-messages', chats);
+        } else {
+          chatSocketObject
+            .to(chats?.[0]?.messageTo.toString())
+            .emit('updated-messages', chats);
+        }
+      }
 
       res.status(StatusCodes.OK).json({
         message: 'Successfully fetched chats',
@@ -224,6 +236,28 @@ class ChatController {
     } catch (err) {
       res.status(StatusCodes.BAD_REQUEST).json({
         message: 'Error adding reaction',
+      });
+      next(err);
+    }
+  }
+
+  public async readChat(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { chatId } = req.body;
+      const chat = await chatService.markChatAsRead(chatId);
+
+      chatSocketObject.to(chat.messageFrom.toString()).emit('read-chat', chat);
+
+      res.status(StatusCodes.OK).json({
+        message: 'Successfully marked chat as read',
+      });
+    } catch (err) {
+      res.status(StatusCodes.BAD_REQUEST).json({
+        message: 'Error marking chat as read',
       });
       next(err);
     }

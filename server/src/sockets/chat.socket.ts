@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
 
 let chatSocketObject: Server;
+const onlineUsers = new Map<string, string>();
 
 class ChatSocketHandler {
   private io: Server;
@@ -14,11 +15,27 @@ class ChatSocketHandler {
     this.io.on('connection', (socket: Socket) => {
       socket.on('register', (_id: string) => {
         socket.join(_id);
-        console.log(`User ${_id} has connected`);
+        onlineUsers.set(socket.id, _id);
+        this.io.emit('post-online', { _id: _id, status: true });
+      });
+
+      socket.on('unregister', (_id: string) => {
+        socket.leave(_id);
+        onlineUsers.delete(socket.id);
+        this.io.emit('post-online', { _id: _id, status: false });
+      });
+
+      socket.on('get-online', (_id: string) => {
+        const isOnline = Array.from(onlineUsers.values()).includes(_id);
+        socket.emit('post-online', { _id: _id, status: isOnline });
       });
 
       socket.on('disconnect', () => {
-        console.log('disconnected');
+        this.io.emit('post-online', {
+          _id: onlineUsers.get(socket.id),
+          status: false,
+        });
+        onlineUsers.delete(socket.id);
       });
     });
   }

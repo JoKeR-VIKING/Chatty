@@ -87,13 +87,13 @@
     scrollbar-width: none;
   }
   .chat-header {
-    @apply flex justify-end items-center bg-white/20 shadow-[0_-11px_15px_-3px_rgb(0_0_0_/_0.1)] rounded-t-lg p-0;
+    @apply flex justify-between items-center bg-white/20 shadow-[0_-11px_15px_-3px_rgb(0_0_0_/_0.1)] rounded-t-lg p-0;
   }
   .chat-header .chat-user-name {
     @apply font-chivo text-xl m-0 ml-3;
   }
   .chat-header .chat-menu-box {
-    @apply w-full h-14 p-6 cursor-pointer;
+    @apply h-14 p-6 cursor-pointer;
   }
   .chat-header .ant-input-clear-icon {
     @apply text-white;
@@ -174,31 +174,40 @@
   .chat-footer {
     @apply w-full flex justify-start items-center px-4 pt-2 pb-5 bg-white/20 shadow-lg rounded-b-lg;
   }
-  .message-box-main, .attachment-box-main {
+  .message-box-main,
+  .attachment-box-main {
     @apply w-full ml-5 mr-5 rounded-2xl bg-primary-dark;
   }
-  .message-box-main .message-reply-main, .attachment-box-main .message-reply-main {
+  .message-box-main .message-reply-main,
+  .attachment-box-main .message-reply-main {
     @apply p-3 mx-2 relative;
   }
-  .message-box-main .message-reply-main .ant-typography, .attachment-box-main .message-reply-main .ant-typography {
+  .message-box-main .message-reply-main .ant-typography,
+  .attachment-box-main .message-reply-main .ant-typography {
     @apply text-white m-0;
   }
-  .message-box-main .message-reply-main .message-reply-text, .attachment-box-main .message-reply-main .message-reply-text {
+  .message-box-main .message-reply-main .message-reply-text,
+  .attachment-box-main .message-reply-main .message-reply-text {
     @apply text-white font-chivo font-medium mb-1;
   }
-  .message-box-main .message-reply-main .message-reply-close-btn, .attachment-box-main .message-reply-main .message-reply-close-btn {
+  .message-box-main .message-reply-main .message-reply-close-btn,
+  .attachment-box-main .message-reply-main .message-reply-close-btn {
     @apply absolute bg-softblack rounded-full -top-3 -right-4;
   }
-  .message-box-main .message-reply-main .message-reply-close-btn:hover, .attachment-box-main .message-reply-main .message-reply-close-btn:hover {
+  .message-box-main .message-reply-main .message-reply-close-btn:hover,
+  .attachment-box-main .message-reply-main .message-reply-close-btn:hover {
     @apply bg-softblack rounded-full scale-110;
   }
-  .message-box-main .message-box, .attachment-box-main .message-box {
+  .message-box-main .message-box,
+  .attachment-box-main .message-box {
     @apply rounded-2xl font-chivo font-light text-[1rem] border-none pt-2.5 pb-2.5;
   }
-  .message-box-main .message-box:focus, .attachment-box-main .message-box:focus {
+  .message-box-main .message-box:focus,
+  .attachment-box-main .message-box:focus {
     @apply shadow-sm shadow-[darkcyan];
   }
-  .message-box-main .attachment-box, .attachment-box-main .attachment-box {
+  .message-box-main .attachment-box,
+  .attachment-box-main .attachment-box {
     @apply w-full rounded-2xl bg-[darkcyan] pl-2 pt-2.5 pb-2.5;
   }
 }

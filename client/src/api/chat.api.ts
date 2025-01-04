@@ -37,8 +37,9 @@ export const getRecentChats = (
 export const getChats = (
   signal: AbortSignal,
   conversationId: string,
+  currentUserId: string,
 ): Promise<AxiosResponse<IGetChatResponse>> => {
-  return axios.get(`chat/conversation/${conversationId}`, {
+  return axios.get(`chat/conversation/${conversationId}/${currentUserId}`, {
     signal,
   });
 };
@@ -69,4 +70,8 @@ export const addReaction = (
   reaction: string,
 ): Promise<AxiosResponse<IApiResponse>> => {
   return axios.post('/chat/create/reaction', { chatId, reaction });
+};
+
+export const readMessage = (chatId: string) => {
+  return axios.post('/chat/read-chat-message', { chatId });
 };

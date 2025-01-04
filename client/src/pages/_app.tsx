@@ -82,7 +82,7 @@ const App = ({ Component, pageProps }: AppProps) => {
               <AuthProvider>
                 <ToastProvider>
                   <Layout className="bg-transparent">
-                    <Content className="min-h-screen hero-bg">
+                    <Content className="h-screen min-h-screen hero-bg">
                       <Component {...pageProps} />
                     </Content>
                   </Layout>

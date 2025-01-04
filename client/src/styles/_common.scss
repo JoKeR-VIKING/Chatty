@@ -38,7 +38,9 @@
   .search-box-main {
     @apply w-full;
     .ant-tooltip {
-      box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
+      box-shadow:
+        0 8px 8px 0 rgba(0, 0, 0, 0.2),
+        0 10px 20px 0 rgba(0, 0, 0, 0.19);
     }
   }
 
@@ -69,7 +71,9 @@
 
   .scroll-to-bottom-btn {
     @apply sticky z-50 left-1/2 bottom-2 -translate-x-1/2 bg-softblack text-white rounded-full invisible -translate-y-10;
-    transition: visibility 0.3s, transform 0.3s ease;
+    transition:
+      visibility 0.3s,
+      transform 0.3s ease;
 
     &.btn-visible {
       @apply visible translate-y-0;

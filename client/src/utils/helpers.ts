@@ -61,6 +61,14 @@ export const scrollToMessage = (
   id: string,
 ) => {
   const messageNode = messagesRef.current.get(id);
-  if (messageNode)
+  if (messageNode) {
     messageNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    messageNode.classList.add('animate__animated');
+    messageNode.classList.add('animate__flash');
+
+    setTimeout(() => {
+      messageNode.classList.remove('animate__animated');
+      messageNode.classList.remove('animate__flash');
+    }, 1000);
+  }
 };

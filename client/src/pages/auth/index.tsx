@@ -13,6 +13,7 @@ import { IApiResponse } from '@src/interfaces';
 import { IUserRequest, IUserResponse } from '@interfaces/user.interface';
 import { useToast } from '@hooks/toast.hooks';
 import { useLogin } from '@hooks/user.hooks';
+import socket from '@src/sockets';
 
 const { Paragraph } = Typography;
 
@@ -24,6 +25,7 @@ const AuthWindow: React.FC = () => {
   const onLoginSuccess = async (data: AxiosResponse<IUserResponse>) => {
     createToast('success', data?.data?.message);
     dispatch(setUser(data?.data?.user));
+    socket.emit('register', data?.data?.user?._id);
     await router.replace('/chat');
   };
 

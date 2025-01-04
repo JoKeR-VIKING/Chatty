@@ -14,7 +14,7 @@ import { Icon } from '@iconify/react';
 import { IChat } from '@interfaces/chat.interface';
 import ChatMessageBox from '@components/Chat/ChatMessageBox';
 import { AppDispatch, RootState } from '@src/store';
-import { useGetChats, useSearchChats } from '@hooks/chat.hooks';
+import { useGetChats, useReadMessage, useSearchChats } from '@hooks/chat.hooks';
 import { useToast } from '@hooks/toast.hooks';
 import { formatDateToTime } from '@utils/helpers';
 import socket from '@sockets/index';
@@ -43,13 +43,17 @@ const ChatContent: React.FC<Props> = (props) => {
   const [isScrolledAtBottom, setIsScrolledAtBottom] = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const { isPending, isSuccess, data, error } = useGetChats(conversationId);
+  const { isPending, isSuccess, data, error } = useGetChats(
+    conversationId,
+    user?._id as string,
+  );
   const {
     isPending: searchChatPending,
     isSuccess: searchChatSuccess,
     data: searchChatData,
     error: searchChatError,
   } = useSearchChats(conversationId, searchChatPrefix);
+  const { mutate } = useReadMessage();
 
   const setMessageRef = (id: string, node: HTMLElement | null) => {
     if (node) messagesRef.current.set(id, node);
@@ -60,9 +64,9 @@ const ChatContent: React.FC<Props> = (props) => {
     if (!contentRef.current) return true;
 
     const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-    const isAtBottom = scrollHeight - (scrollTop + clientHeight) <= 200;
+    const isAtBottom = scrollHeight - (scrollTop + clientHeight) <= 100;
 
-    return isAtBottom;
+    setIsScrolledAtBottom(isAtBottom);
   };
 
   useEffect(() => {
@@ -97,6 +101,11 @@ const ChatContent: React.FC<Props> = (props) => {
     const handleNewMessage = (newChat: IChat) => {
       if (newChat?.conversationId !== conversationId) return;
 
+      if (newChat?.messageTo === user?._id) {
+        mutate(newChat?._id);
+        newChat.isRead = true;
+      }
+
       setChats((prevState) => {
         if (!prevState.some((chat) => chat._id === newChat._id)) {
           return [...prevState, newChat];
@@ -110,7 +119,7 @@ const ChatContent: React.FC<Props> = (props) => {
     return () => {
       socket.off('new-message', handleNewMessage);
     };
-  }, [conversationId]);
+  }, [conversationId, user?._id, mutate]);
 
   useEffect(() => {
     const handleNewReaction = (updatedChat: IChat) => {
@@ -133,7 +142,7 @@ const ChatContent: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolledAtBottom(isAtBottom());
+      isAtBottom();
     };
 
     const content = contentRef.current;
@@ -153,7 +162,7 @@ const ChatContent: React.FC<Props> = (props) => {
       if (initial && !isPending) {
         contentRef.current.scrollTop = scrollHeight;
         setInitial(false);
-      } else if (isAtBottom() && !isPending) {
+      } else if (isScrolledAtBottom && !isPending) {
         contentRef.current.scrollTo({
           top: scrollHeight,
           behavior: 'smooth',
@@ -162,7 +171,43 @@ const ChatContent: React.FC<Props> = (props) => {
     };
 
     scrollToBottom();
-  }, [chats, initial, isPending, messagesRef]);
+  }, [chats, initial, isPending, messagesRef, isScrolledAtBottom]);
+
+  useEffect(() => {
+    const handleReadMessage = (chat: IChat) => {
+      if (!messagesRef.current.has(chat?._id)) return;
+
+      setChats((prev) => {
+        return prev.map((currChat) => {
+          if (currChat?._id === chat?._id) {
+            return {
+              ...currChat,
+              isRead: chat?.isRead,
+            };
+          }
+
+          return currChat;
+        });
+      });
+    };
+
+    socket.on('read-chat', handleReadMessage);
+    return () => {
+      socket.off('read-chat', handleReadMessage);
+    };
+  }, [messagesRef]);
+
+  useEffect(() => {
+    const handleUpdatedMessages = (chats: IChat[]) => {
+      if (chats?.[0]?.conversationId.toString() !== conversationId) return;
+      setChats(chats);
+    };
+
+    socket.on('updated-messages', handleUpdatedMessages);
+    return () => {
+      socket.off('updated-messages', handleUpdatedMessages);
+    };
+  }, [conversationId]);
 
   if (!conversationId) {
     return (

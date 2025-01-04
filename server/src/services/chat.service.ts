@@ -94,8 +94,19 @@ class ChatService {
     ]).exec();
   }
 
-  public async getChats(conversationId: string | ObjectId) {
+  public async getChats(
+    conversationId: string | ObjectId,
+    currentUserId: string,
+  ) {
     const query = { conversationId: conversationId };
+
+    await ChatModel.updateMany(
+      {
+        conversationId: conversationId,
+        messageTo: currentUserId,
+      },
+      { $set: { isRead: true } },
+    );
 
     const chats = await ChatModel.find(query)
       .sort({ createdAt: -1 })
@@ -151,6 +162,16 @@ class ChatService {
     return (await ChatModel.findOneAndUpdate(
       query,
       { $set: { reaction: reaction } },
+      { new: true },
+    ).exec()) as IChatDocument;
+  }
+
+  public async markChatAsRead(chatId: string | ObjectId) {
+    const query = { _id: new ObjectId(chatId) };
+
+    return (await ChatModel.findByIdAndUpdate(
+      query,
+      { $set: { isRead: true } },
       { new: true },
     ).exec()) as IChatDocument;
   }

@@ -10,6 +10,7 @@ import SearchBox from '@components/SearchBox';
 import RecentChats from '@components/RecentChats';
 import { RootState } from '@src/store';
 import { useLogout } from '@hooks/user.hooks';
+import socket from '@src/sockets';
 
 const { Sider } = Layout;
 
@@ -21,6 +22,7 @@ const Sidebar: React.FC = () => {
   const logout = async () => {
     googleLogout();
     await refetch();
+    socket.emit('unregister', user?._id);
     await router.replace('/auth');
   };
 
