@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Pacifico&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Pacifico&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -38,7 +38,9 @@
     @apply w-full;
   }
   .search-box-main .ant-tooltip {
-    box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.2), 0 10px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow:
+      0 8px 8px 0 rgba(0, 0, 0, 0.2),
+      0 10px 20px 0 rgba(0, 0, 0, 0.19);
   }
   .sidebar-search {
     @apply w-[90%] rounded-3xl mt-5;
@@ -60,7 +62,9 @@
   }
   .scroll-to-bottom-btn {
     @apply sticky z-50 left-1/2 bottom-2 -translate-x-1/2 bg-softblack text-white rounded-full invisible -translate-y-10;
-    transition: visibility 0.3s, transform 0.3s ease;
+    transition:
+      visibility 0.3s,
+      transform 0.3s ease;
   }
   .scroll-to-bottom-btn.btn-visible {
     @apply visible translate-y-0;
@@ -142,31 +146,64 @@
   .chat-content .chat-message-main .chat-reply-box .message-reply-main {
     @apply p-3 mx-2 relative;
   }
-  .chat-content .chat-message-main .chat-reply-box .message-reply-main .ant-typography {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .message-reply-main
+    .ant-typography {
     @apply text-white m-0;
   }
-  .chat-content .chat-message-main .chat-reply-box .message-reply-main .message-reply-text {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .message-reply-main
+    .message-reply-text {
     @apply text-white font-chivo font-medium mb-1;
   }
-  .chat-content .chat-message-main .chat-reply-box .message-reply-main .message-reply-close-btn {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .message-reply-main
+    .message-reply-close-btn {
     @apply absolute bg-softblack rounded-full -top-3 -right-4;
   }
-  .chat-content .chat-message-main .chat-reply-box .message-reply-main .message-reply-close-btn:hover {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .message-reply-main
+    .message-reply-close-btn:hover {
     @apply bg-softblack rounded-full scale-110;
   }
   .chat-content .chat-message-main .chat-reply-box .chat-message-box {
     @apply w-full rounded-lg relative;
   }
-  .chat-content .chat-message-main .chat-reply-box .chat-message-box .chat-message {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .chat-message-box
+    .chat-message {
     @apply font-chivo font-extralight text-white p-3 pt-0 m-0 text-justify relative;
   }
-  .chat-content .chat-message-main .chat-reply-box .chat-message-box .chat-image {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .chat-message-box
+    .chat-image {
     @apply rounded-lg;
   }
-  .chat-content .chat-message-main .chat-reply-box .chat-message-box .chat-image + .ant-image-mask {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .chat-message-box
+    .chat-image
+    + .ant-image-mask {
     @apply rounded-lg;
   }
-  .chat-content .chat-message-main .chat-reply-box .chat-message-box .read-icon {
+  .chat-content
+    .chat-message-main
+    .chat-reply-box
+    .chat-message-box
+    .read-icon {
     @apply absolute bottom-2 right-2;
   }
   .chat-content .chat-message-main .chat-reply-box .chat-time {
@@ -177,14 +214,14 @@
   }
   .chat-content .chat-message-main .chat-reply-box .chat-your::after {
     @apply absolute -bottom-1.5 right-0 w-0 h-0 border-8 border-solid border-primary border-l-transparent border-b-transparent;
-    content: "";
+    content: '';
   }
   .chat-content .chat-message-main .chat-reply-box .chat-them {
     @apply bg-softblack;
   }
   .chat-content .chat-message-main .chat-reply-box .chat-them::after {
     @apply absolute -bottom-1.5 left-0 w-0 h-0 border-8 border-solid border-softblack border-r-transparent border-b-transparent;
-    content: "";
+    content: '';
   }
   .chat-footer {
     @apply w-full flex justify-start items-center px-4 pt-2 pb-5 bg-white/20 shadow-lg rounded-b-lg;
@@ -397,7 +434,12 @@ body {
 }
 
 .hero-bg {
-  background-image: linear-gradient(to right bottom, rgba(77, 159, 159, 0.85), rgba(77, 159, 159, 0.85)), url(/images/Chat.png);
+  background-image: linear-gradient(
+      to right bottom,
+      rgba(77, 159, 159, 0.85),
+      rgba(77, 159, 159, 0.85)
+    ),
+    url(/images/Chat.png);
   background-size: cover;
   background-position: center;
 }

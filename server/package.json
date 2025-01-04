@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "nodemon -r tsconfig-paths/register src/app.ts",
+    "start": "node dist/app.js",
     "build": "tsc",
     "prettier": "pnpm exec prettier --write .",
     "type-check": "tsc --noEmit"
