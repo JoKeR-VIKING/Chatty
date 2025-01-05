@@ -57,7 +57,7 @@ class App {
           httpOnly: true,
           secure: Config.NODE_ENV === 'production',
           maxAge: 1000 * 60 * 60 * 24 * 3,
-          sameSite: 'none',
+          sameSite: Config.NODE_ENV === 'production' ? 'none' : 'lax',
         },
       }),
     );
