@@ -23,6 +23,7 @@ const AuthProvider: React.FC<Props> = (props) => {
       if (!isPending) {
         if (isSuccess) {
           dispatch(setUser(data?.data?.user));
+          await router.replace('/chat');
           socket.emit('register', data?.data?.user?._id);
         } else {
           await router.replace('/auth');
@@ -30,7 +31,7 @@ const AuthProvider: React.FC<Props> = (props) => {
         }
       }
     })();
-  }, [dispatch, isPending, isSuccess, data, error]);
+  }, [dispatch, isPending, isSuccess, data, error, router]);
 
   return <>{children}</>;
 };
