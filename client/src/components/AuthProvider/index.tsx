@@ -23,15 +23,15 @@ const AuthProvider: React.FC<Props> = (props) => {
       if (!isPending) {
         if (isSuccess) {
           dispatch(setUser(data?.data?.user));
-          await router.replace('/chat');
           socket.emit('register', data?.data?.user?._id);
+          await router.replace('/chat');
         } else {
           await router.replace('/auth');
           dispatch(clearUser());
         }
       }
     })();
-  }, [dispatch, isPending, isSuccess, data, error, router]);
+  }, [dispatch, isPending, isSuccess, data, error]);
 
   return <>{children}</>;
 };
